@@ -1,0 +1,1016 @@
+1menu:File
+
+item:test cmask output
+itemmethod: kedit in1
+
+in:in1
+informat:colormask
+
+item:New sequence   <meta N>
+itemmethod:echo "$Type$Name" > out1
+itemmeta:n
+itemhelp:new_sequence.help
+ 
+arg:Name 
+argtype:text 
+arglabel:New Sequence name? 
+argtext:New 
+ 
+arg:Type 
+argtype:choice_list 
+arglabel:Type? 
+argchoice:DNA/RNA:# 
+argchoice:Amino Acid:% 
+argchoice:Text:\"
+argchoice:Mask:@ 
+
+out:out1
+outformat:flat
+
+item:Import Foreign Format
+itemmethod:cp $INPUTFILE OUTFILE.tmp;readseq OUTFILE.tmp -a -f2 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp
+itemhelp:readseq.help
+
+arg:INPUTFILE
+argtype:text
+arglabel:Name of foreign file?
+
+out:OUTPUTFILE
+outformat:genbank
+
+item:Export Foreign Format
+itemmethod:readseq INPUTFILE -a -f$FORMAT > $OUTPUTFILE
+itemhelp:readseq.help
+
+arg:FORMAT
+argtype:choice_list
+argchoice:FASTA:8
+argchoice:NEXUS:17
+argchoice:Phylip v3.3:12
+argchoice:IG/Stanford:1
+argchoice:GenBank:2
+argchoice:NBRF:3
+argchoice:EMBL:4
+argchoice:GCG:5
+argchoice:DNA Strider:6
+argchoice:Fitch:7
+argchoice:Pearson:8
+argchoice:Zuker:9
+argchoice:Olsen:10
+argchoice:Phylip v3.2:11
+argchoice:Phylip v3.3:12
+argchoice:Plain text:13
+
+arg:OUTPUTFILE
+argtype:text
+arglabel:Save as?
+
+in:INPUTFILE
+informat:genbank
+
+
+item:Save Selection
+itemmethod: cat $SAVE_FUNC > $Name
+itemhelp:save_selection.help
+
+arg:SAVE_FUNC
+argtype:chooser
+arglabel:File format
+argchoice:Flat:in1
+argchoice:Genbank:in2
+argchoice:GDE/HGL:in3
+
+arg:Name
+argtype:text
+arglabel:File name?
+
+in:in1
+informat:flat
+
+in:in2
+informat:genbank
+
+in:in3
+informat:gde
+
+item:Print Selection
+itemmethod:(PrintStrat in1 $SCALE > in1.tmp; $CMD -P$PRINTER in1.tmp; /bin/rm -f in1 in1.tmp)&
+itemhelp:print_alignment.help
+ 
+arg:SCALE
+argtype:slider
+arglabel:Reduce printout by?
+argmin:1
+argmax:20
+argvalue:1
+
+arg:CMD
+argtype:chooser
+argchoice:Lpr:lpr
+argchoice:Enscript Gaudy:enscript -G -q
+argchoice:Enscript Two column:enscript -2rG
+ 
+arg:PRINTER
+argtype:text
+arglabel:Which printer?
+argtext:lp
+ 
+in:in1
+informat:gde
+insave:
+
+menu:Edit
+
+item:Sort
+itemmethod:(heapsortHGL in1 $PRIM_KEY $SEC_KEY > in1.tmp ; gde in1.tmp;/bin/rm -f in1*)&
+itemhelp:heapsortHGL.help
+
+arg:PRIM_KEY
+argtype:choice_list
+argchoice:Group:group-ID
+argchoice:type:type
+argchoice:name:name
+argchoice:Sequence ID:sequence-ID
+argchoice:creator:creator
+argchoice:offset:offset
+arglabel:Primary sort field?
+
+arg:SEC_KEY
+argtype:choice_list
+argchoice:None:
+argchoice:Group:group-ID
+argchoice:type:type
+argchoice:name:name
+argchoice:Sequence ID:sequence-ID
+argchoice:creator:creator
+argchoice:offset:offset
+arglabel:Secondary sort field?
+
+in:in1
+informat:gde
+insave:
+
+item:extract
+itemmethod:(gde in1;/bin/rm -f in1)&
+
+in:in1
+informat:gde
+inmask:
+insave:
+
+menu:DNA/RNA
+
+item:Translate...
+itemmethod:Translate -tbl $TBL -frame $FRAME -min_frame $MNFRM $LTRCODE in1 > out1
+
+arg:FRAME
+argtype:chooser
+arglabel:Which reading frame?
+argchoice:First:1
+argchoice:Second:2
+argchoice:Third:3
+argchoice:All six:6
+
+arg:MNFRM
+arglabel:Minimum length of AA sequence to translate?
+argtype:slider
+argmin:0
+argmax:100
+argvalue:20
+
+arg:LTRCODE
+argtype:chooser
+arglabel:Translate to:
+argchoice:Single letter codes:
+argchoice:Triple letter codes:-3
+
+arg:TBL
+arglabel:Codon table?
+argtype:chooser
+argchoice:universal:1
+argchoice:mycoplasma:2
+argchoice:yeast:3
+argchoice:Vert. mito.:4
+in:in1
+informat:gde
+
+out:out1
+outformat:gde
+
+item:Dot plot
+itemmethod:(DotPlotTool in1 ; /bin/rm -f in1)&
+itemhelp:DotPlotTool.help
+
+in:in1
+informat:gde
+insave:
+
+item:Clustal alignment
+itemmethod:(tr '%#' '>'<in1>clus_in;clustalw -quicktree -output=PIR -infile=clus_in -align  > in1.rpt;sed "s/>DL;/#/g" < clus_in.pir> in1;$REPORT gde in1;/bin/rm -f clus_in* in1*   )&
+
+itemhelp:clustal_help
+
+arg:KTUP
+argtype:slider
+arglabel:K-tuple size for pairwise search
+argmin:1
+argmax:10
+argvalue:2
+
+arg:WIN
+argtype:slider
+arglabel:Window size
+argmin:1
+argmax:10
+argvalue:4
+
+arg:Trans
+argtype:chooser
+arglabel:Transitions weighted?
+argchoice:Yes:/TRANSIT
+argchoice:No:
+
+arg:FIXED
+argtype:slider
+arglabel:Fixed gap penalty
+argmin:1
+argmax:100
+argvalue:10
+
+arg:FLOAT
+arglabel:Floating gap penalty
+argtype:slider
+argmin:1
+argmax:100
+argvalue:10
+
+arg:REPORT
+argtype:chooser
+arglabel:View assembly report?
+argchoice:No:
+argchoice:Yes:kedit in1.rpt&
+
+ 
+in:in1
+informat:flat
+insave:
+
+item:Variable Positions
+itemmethod:varpos $REV < in1 > out1
+
+arg:REV
+argtype:chooser
+arglabel:Highlight (darken)
+argchoice:Conserved positions:
+argchoice:variable positions:-rev
+
+in:in1
+informat:flat
+
+out:out1
+outformat:colormask
+
+item:Phrap
+itemmethod:readseq in1 -a -f8 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp; phrap OUTPUTFILE; readseq -a -f2 OUTPUTFILE.contigs > out1;/bin/rm -rf OUTPUT*;
+
+in:in1
+informat:genbank
+
+out:out1
+outformat:genbank
+
+item:SNAP
+itemmethod: cat in1 > infile;/usr/local/bio/GDE/bin/fasta2snap.pl > outfile;  /usr/bin/X11/xterm -e  /home/tulio/bio/SNAP/SNAP.pl outfile; kedit backg*; kedit summ*; sheeltool /home/tulio/bio/codons-xyplot.pl codons.*; kedit codon.data; /bin/rm -rf back* codon* summ*;
+
+in:in1
+informat:flat
+out:out1
+outformat:text
+
+
+
+
+item:Find all <meta-f>
+itemmethod:findall $SEARCH $PRCNT $CASE $UT -match $MAT -mismatch $MIS < in1 > out1;
+itemhelp:findall.help 
+itemmeta:f
+ 
+arg:SEARCH
+argtype:text
+arglabel:Search String
+ 
+arg:PRCNT
+argtype:slider
+arglabel:Percent mismatch
+argmin:0
+argmax:75
+argvalue:10
+ 
+arg:CASE
+argtype:chooser
+arglabel:Case
+argchoice:Upper equals lower:
+argchoice:Upper not equal lower:-case
+ 
+arg:UT
+argtype:chooser
+arglabel:U equal T?
+argchoice:Yes:-u=t
+argchoice:No:
+argvalue:0
+ 
+arg:MAT
+arglabel:Match color
+argtype:choice_list
+argchoice:yellow:1
+argchoice:violet:2
+argchoice:red:3
+argchoice:aqua:4
+argchoice:green:5
+argchoice:blue:6
+argchoice:grey:11
+argchoice:black:8
+argvalue:2
+ 
+arg:MIS
+argtype:choice_list
+arglabel:Mismatch color
+argchoice:yellow:1
+argchoice:violet:2
+argchoice:red:3
+argchoice:aqua:4
+argchoice:green:5
+argchoice:blue:6
+argchoice:grey:11
+argchoice:black:8
+argvalue:7
+
+in:in1
+informat:flat
+ 
+out:out1
+outformat:colormask
+
+item:Sequence Consensus
+itemmethod:(MakeCons in1 $METHOD $MASK > out1)
+itemhelp:MakeCons.help
+
+arg:METHOD
+arglabel:Method
+argtype:chooser
+argchoice:IUPAC:-iupac
+argchoice:Majority:-majority $PERCENT
+
+arg:MASK
+argtype:chooser
+arglabel:Create a new:
+argchoice:Sequence:
+argchoice:Selection Mask: | Consto01mask
+
+arg:PERCENT
+arglabel:Minimum Percentage for Majority
+argtype:slider
+argmin:50
+argmax:100
+argvalue:75
+
+in:in1
+informat:gde
+
+out:out1
+outformat:gde
+
+
+#Menu for DNA/RNA
+
+item:blastn
+itemmethod:(sed "s/[#%]/>/" <in1 > in1.f; /usr/local/bio/blast/blastall -p blastn -d $BLASTDBDNA -i in1.f -W $WORDLEN -M $MATCH  > in1.tmp; kedit in1.tmp; rm in1*)&
+
+in:in1
+informat:flat
+insave:
+
+arg:BLASTDBDNA
+argtype:choice_list
+arglabel:Which Database
+argchoice:HIV-1 Seq. Db.:/usr/local/bio/db/DNA/hiv17-08-01.fasta2
+argchoice:NEW:/usr/local/bio/db/newblast.fasta
+argchoice:TEST:/usr/local/bio/db/test_na_db
+argchoice:testDB:/usr/local/bio/db/test_na_db
+argchoice:HIV-1 Subtype:/usr/local/bio/db/DNA/subcomplete.fasta
+argchoice:HIV-1 HXB2 Numbering:/usr/local/bio/db/HXB2.fasta
+argchoice:HCV Numbering:/usr/local/bio/db/HCV.fasta
+arg:WORDLEN
+argtype:slider
+arglabel:Word Size
+argmin:4
+argmax:18
+argvalue:12
+
+arg:MATCH
+argtype:slider
+arglabel:Match Score
+argmin:1
+argmax:10
+argvalue:5
+
+arg:MMSCORE
+argtype:slider
+arglabel:Mismatch Score
+argmin:-10
+argmax:-1
+argvalue:-5
+
+item:blastx
+itemmethod:(sed "s/[#%]/>/" <in1 > in1.f; /usr/local/bio/blast/blastall -p blastx -d $BLASTDB -i in1.f -W $WORDLEN -M PAM30  > in1.tmp; /usr/openwin/bin/kedit in1.tmp; rm in1*)&
+
+
+
+in:in1
+informat:flat
+insave:
+
+arg:BLASTDB
+argtype:choice_list
+arglabel:Which Database
+argchoice:HIV Proteins:/usr/local/bio/db/hiv17-08-01.PROT.fasta
+argchoice:genpept:$GDE_HELP_DIR/BLAST/genpept
+
+arg:WORDLEN
+argtype:slider
+arglabel:Word Size
+argmin:1
+argmax:5
+argvalue:3
+
+arg:Matrix
+arglabel:Substitution Matrix:
+argtype:choice_list
+argchoice:PAM30:PAM30
+argchoice:PAM70:PAM70
+
+arg:CODE
+argtype:choice_list
+arglabel:Genetic Code
+argchoice:Standard or Universal:0
+argchoice:Vertebrate Mitochondrial:1
+argchoice:Yeast Mitochondrial:2
+argchoice:Mold Mitochondrial and Mycoplasma:3
+argchoice:Invertebrate Mitochondrial:4
+argchoice:Ciliate Macronuclear:5
+argchoice:Protozoan Mitochondrial:6
+argchoice:Plant Mitochondrial:7
+argchoice:Echinodermate Mitochondrial:8
+
+item:------------------------
+
+item:Add a new DNA blast db
+itemmethod:xterm -e formatdb -i $sourcefile -p F -o T; /usr/local/bio/GDE/installBLASTDB.pl $sourcefile $menuname;
+
+arg:sourcefile
+argtype:text
+arglabel: enter the file name
+
+arg:menuname
+argtype:text
+arglabel: enter the name of the DB
+
+
+
+
+menu:HIV Seq. Db.
+item:Ref. Seq. for Drug Resistance
+itemmethod:cp $INPUTFILE OUTFILE.tmp;readseq OUTFILE.tmp -a -f2 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp
+itemhelp:readseq.help
+
+arg:INPUTFILE
+argtype:chooser
+arglabel:Sequence
+argchoice:Prot function:/database/AA/protease.mutations.fasta
+argchoice:rt function:/database/AA/rtmutations.fasta
+argchoice:pNL4-3 CG :/database/DR/pNL4-3.CG.fasta
+argchoice:pNL4-3 protease :/database/DR/pNL4-3.prot$format.fasta
+argchoice:pNL4-3 RT :/database/DR/pNL4-3.RT$format.fasta
+argchoice:HXB2 CG :/database/DR/HXB2.fasta
+argchoice:HXB2 protease :/database/DR/HXB2.prot$format.fasta
+argchoice:HXB2 RT :/database/DR/HXB2.RT$format.fasta
+argchoice:data1.fasta:/database/DNA/data1.fasta
+
+
+arg:format
+argtype:chooser
+arglabel:Format
+argchoice:DNA:
+argchoice:AA:AA
+
+out:OUTPUTFILE
+outformat:genbank
+
+item:HIV-1 Subtype Db.
+itemmethod:cp $INPUTFILE OUTFILE.tmp;readseq OUTFILE.tmp -a -f2 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp
+itemhelp:readseq.help
+
+arg:INPUTFILE
+argtype:choice_list
+arglabel:HIV-1 Subtype genome regions
+argchoice:CG:/usr/local/bio/db/DNA/subtyperef/subcomplete.fasta 
+argchoice:sub5ltr.fasta:/usr/local/bio/db/DNA/subtyperef/sub5ltr.fasta
+argchoice:sub5ltrU3.fasta:/usr/local/bio/db/DNA/subtyperef/sub5ltrU3.fasta
+argchoice:sub5ltrU5.fasta:/usr/local/bio/db/DNA/subtyperef/sub5ltrU5.fasta
+argchoice:subenv.fasta:/usr/local/bio/db/DNA/subtyperef/subenv.fasta
+argchoice:subenv-gp120.fasta:/usr/local/bio/db/DNA/subtyperef/subenv-gp120.fasta
+argchoice:subenv-gp41.fasta:/usr/local/bio/db/DNA/subtyperef/subenv-gp41.fasta
+argchoice:subenvv3.fasta:/usr/local/bio/db/DNA/subtyperef/subenvv3.fasta
+argchoice:subgag.fasta:/usr/local/bio/db/DNA/subtyperef/subgag.fasta
+argchoice:subgag-p17.fasta:/usr/local/bio/db/DNA/subtyperef/subgag-p17.fasta
+argchoice:subgag-p24.fasta:/usr/local/bio/db/DNA/subtyperef/subgag-p24.fasta
+argchoice:subgag-pol.fasta:/usr/local/bio/db/DNA/subtyperef/subgag-pol.fasta
+argchoice:subpol.fasta:/usr/local/bio/db/DNA/subtyperef/subpol.fasta
+argchoice:subpol-p15RNAase.fasta:/usr/local/bio/db/DNA/subtyperef/subpol-p15RNAase.fasta
+argchoice:subpol-p31integrase.fasta:/usr/local/bio/db/DNA/subtyperef/subpol-p31integrase.fasta
+argchoice:subpol-p51RT.fasta:/usr/local/bio/db/DNA/subtyperef/subpol-p51RT.fasta
+argchoice:subpol-protease.fasta:/usr/local/bio/db/DNA/subtyperef/subpol-protease.fasta
+argchoice:subrevCDS.fasta:/usr/local/bio/db/DNA/subtyperef/subrevCDS.fasta
+argchoice:subrevexon1.fasta:/usr/local/bio/db/DNA/subtyperef/subrevexon1.fasta
+argchoice:subrevexon2.fasta:/usr/local/bio/db/DNA/subtyperef/subrevexon2.fasta
+argchoice:subrevintron.fasta:/usr/local/bio/db/DNA/subtyperef/subrevintron.fasta
+argchoice:subTAR.fasta:/usr/local/bio/db/DNA/subtyperef/subTAR.fasta
+argchoice:subtatCDS.fasta:/usr/local/bio/db/DNA/subtyperef/subtatCDS.fasta
+argchoice:subtatexon1.fasta:/usr/local/bio/db/DNA/subtyperef/subtatexon1.fasta
+argchoice:subtatexon2.fasta:/usr/local/bio/db/DNA/subtyperef/subtatexon2.fasta
+argchoice:subtatintron.fasta:/usr/local/bio/db/DNA/subtyperef/subtatintron.fasta
+argchoice:subvif.fasta:/usr/local/bio/db/DNA/subtyperef/subvif.fasta
+argchoice:subvpr.fasta:/usr/local/bio/db/DNA/subtyperef/subvpr.fasta
+argchoice:subvpu.fasta:/usr/local/bio/db/DNA/subtyperef/subvpu.fasta
+argchoice:subnef.fasta:/usr/local/bio/db/DNA/subtyperef/subnef.fasta
+
+out:OUTPUTFILE
+outformat:genbank
+
+
+item:HIV-1 Subtype reduz.
+itemmethod:cp $INPUTFILE OUTFILE.tmp;readseq OUTFILE.tmp -a -f2 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp
+itemhelp:readseq.help
+
+arg:INPUTFILE
+argtype:choice_list
+arglabel:HIV-1 Subtype genome regions
+argchoice:HIV Subtype C CG:/database/DNA/sub-reference/subC.CG.fasta
+argchoice:HIV-1 GAG sub:/database/DNA/sub-reference/gagsub-reference.fasta
+argchoice:HIV-1 POL sub:/database/DNA/sub-reference/polsub-reference.fasta
+argchoice:HIV-1 VIF sub:/database/DNA/sub-reference/vifsub-reference.fasta
+argchoice:HIV-1 VPR sub:/database/DNA/sub-reference/vprsub-reference.fasta
+argchoice:HIV-1 TAT sub:/database/DNA/sub-reference/tatsub-reference.fasta
+argchoice:HIV-1 REV sub:/database/DNA/sub-reference/revsub-reference.fasta
+argchoice:HIV-1 VPU sub:/database/DNA/sub-reference/vpusub-reference.fasta
+argchoice:HIV-1 ENV sub:/database/DNA/sub-reference/envsub-reference.fasta
+argchoice:HIV-1 NEF sub:/database/DNA/sub-reference/nefsub-reference.fasta
+
+out:OUTPUTFILE
+outformat:genbank
+
+item:HIV-1 Subtype B & C Gen. regions
+itemmethod:cp $INPUTFILE OUTFILE.tmp;readseq OUTFILE.tmp -a -f2 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp
+itemhelp:readseq.help
+
+arg:INPUTFILE
+argtype:choice_list
+arglabel:HIV-1 Subtype genome regions
+argchoice:HIV Subtype C CG:/database/DNA/subB/$format.fasta
+argchoice:HIV-1 GAG sub:/database/DNA/subB/$format.gag$type.fasta
+argchoice:HIV-1 POL sub:/database/DNA/subB/$format.pol$type.fasta
+argchoice:HIV-1 PROTEASE sub:/database/DNA/subB/$format.pol-prot$type.fasta
+argchoice:HIV-1 RT sub:/database/DNA/subB/$format.pol-RT$type.fasta
+argchoice:HIV-1 INTEGRASE sub:/database/DNA/subB/$format.pol-INT$type.fasta
+argchoice:HIV-1 VIF sub:/database/DNA/subB/$format.vif$type.fasta
+argchoice:HIV-1 VPR sub:/database/DNA/subB/$format.vpr$type.fasta
+argchoice:HIV-1 TAT sub:/database/DNA/subB/$format.tat$type.fasta
+argchoice:HIV-1 REV sub:/database/DNA/subB/$format.rev$type.fasta
+argchoice:HIV-1 VPU sub:/database/DNA/subB/$format.vpu$type.fasta
+argchoice:HIV-1 ENV sub:/database/DNA/subB/$format.env$type.fasta
+argchoice:HIV-1 NEF sub:/database/DNA/subB/$format.nef$type.fasta
+
+arg:format
+argtype:chooser
+arglabel:Format
+argchoice:Subtype B:subB
+argchoice:Subtype C:subC
+
+arg:type
+argtype:chooser
+arglabel:type
+argchoice:DNA:
+argchoice:AA:AA
+
+out:OUTPUTFILE
+outformat:genbank
+
+
+item:Find Beggining of Genome regions
+itemmethod:findall $SEARCH $PRCNT $CASE $UT -match $MAT -mismatch $MIS < in1 > out1;
+itemhelp:findall.help 
+itemmeta:f
+ 
+arg:SEARCH
+argtype:choice_list
+argchoice:Protease:ATCACTCTTTGG
+argchoice:Protease:ATC
+arglabel:Search String
+ 
+arg:PRCNT
+argtype:slider
+arglabel:Percent mismatch
+argmin:0
+argmax:75
+argvalue:10
+ 
+arg:CASE
+argtype:chooser
+arglabel:Case
+argchoice:Upper equals lower:
+argchoice:Upper not equal lower:-case
+ 
+arg:UT
+argtype:chooser
+arglabel:U equal T?
+argchoice:Yes:-u=t
+argchoice:No:
+argvalue:0
+ 
+arg:MAT
+arglabel:Match color
+argtype:choice_list
+argchoice:yellow:1
+argchoice:violet:2
+argchoice:red:3
+argchoice:aqua:4
+argchoice:green:5
+argchoice:blue:6
+argchoice:grey:11
+argchoice:black:8
+argvalue:2
+ 
+arg:MIS
+argtype:choice_list
+arglabel:Mismatch color
+argchoice:yellow:1
+argchoice:violet:2
+argchoice:red:3
+argchoice:aqua:4
+argchoice:green:5
+argchoice:blue:6
+argchoice:grey:11
+argchoice:black:8
+argvalue:7
+
+in:in1
+informat:flat
+out:out1
+outformat:colormask
+
+
+item:hivHXB2 genome regions aln
+itemmethod:cp $INPUTFILE OUTFILE.tmp;readseq OUTFILE.tmp -a -f2 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp
+itemhelp:readseq.help
+
+arg:INPUTFILE
+argtype:chooser
+arglabel:HXB2 Reference Seq
+argchoice:CG:/database/DNA/hivHXB2regions.fasta
+
+out:OUTPUTFILE
+outformat:genbank
+
+menu:Protein
+
+
+item:Clustal Protein Alignment
+itemmethod:(tr '%#' '>'<in1>clus_in;clustalw -output=GDE -infile=clus_in -align  > in1.rpt;sed "s/>DL;/#/g" < clus_in.gde> in1;$REPORT gde clus_in.gde;/bin/rm -f clus_in* in1*   )&
+
+
+arg:KTUP
+argtype:slider
+arglabel:K-tuple size for pairwise search
+argmin:1
+argmax:10
+argvalue:2
+
+arg:WIN
+argtype:slider
+arglabel:Window size
+argmin:1
+argmax:10
+argvalue:4
+
+arg:Matrx
+argtype:chooser
+arglabel:Weighting matrix
+argchoice:PAM 250:PAM250
+argchoice:PAM 100:PAM100
+argchoice:Identity:ID
+
+arg:FIXED
+argtype:slider
+arglabel:Fixed gap penalty
+argmin:1
+argmax:100
+argvalue:10
+ 
+arg:FLOAT
+arglabel:Floating gap penalty
+argtype:slider
+argmin:1
+argmax:100
+argvalue:10
+
+arg:REPORT
+argtype:chooser
+arglabel:View assembly report?
+argchoice:No:
+argchoice:Yes:kedit in1.rpt&
+ 
+in:in1
+informat:flat
+insave:
+
+
+#Menu for Protein
+
+item:blastp
+itemmethod:(sed "s/[#%]/>/" <in1 > in1.f; cp /usr/local/bio/db/PAM30; /usr/local/bio/blast/blastall -p blastp -d $BLASTDB -i in1.f -W $WORDLEN -M $Matrix > in1.tmp; /usr/openwin/bin/kedit in1.tmp; rm in1* PAM30)&
+
+
+in:in1
+informat:flat
+insave:
+
+arg:BLASTDB
+argtype:choice_list
+arglabel:Which Database
+argchoice:HIV Proteins Tulio:/usr/local/bio/db/HIV-PROTEINS-tulio.fasta
+argchoice:HIV Proteins:/usr/local/bio/db/hiv17-08-01.PROT.fasta
+argchoice:HIV-1 Structures at PDB:/usr/local/bio/db/Prot.3d.fasta
+argchoice:local:$GDE_HELP_DIR/BLAST/local_db
+
+arg:Matrix
+barglabel:Substitution Matrix:
+argtype:choice_list
+argchoice:PAM30:PAM30
+argchoice:PAM70:PAM70
+
+arg:WORDLEN
+argtype:slider
+arglabel:Word Size
+argmin:1
+argmax:5
+argvalue:3
+
+item:tblastn
+itemmethod:(sed "s/[#%]/>/" <in1 > in1.f; cp /usr/local/bio/db/PAM??? .; tblastn $BLASTDB in1.f W=$WORDLEN M=$Matrix C=$CODE > in1.tmp; kedit in1.tmp; rm in1* PAM???)&
+
+in:in1
+informat:flat
+insave:
+
+arg:BLASTDB
+argtype:choice_list
+arglabel:Which Database
+argchoice:genbank:$GDE_HELP_DIR/BLAST/genbank
+argchoice:genbank update:$GDE_HELP_DIR/BLAST/genupdate
+
+arg:Matrix
+arglabel:Substitution Matrix:
+argtype:choice_list
+argchoice:PAM30:PAM30
+argchoice:PAM70:PAM70
+
+arg:WORDLEN
+argtype:slider
+arglabel:Word Size
+argmin:4
+argmax:18
+argvalue:12
+
+arg:CODE
+argtype:choice_list
+arglabel:Genetic Code
+argchoice:Standard or Universal:0
+argchoice:Vertebrate Mitochondrial:1
+argchoice:Yeast Mitochondrial:2
+argchoice:Mold Mitochondrial and Mycoplasma:3
+argchoice:Invertebrate Mitochondrial:4
+argchoice:Ciliate Macronuclear:5
+argchoice:Protozoan Mitochondrial:6
+argchoice:Plant Mitochondrial:7
+argchoice:Echinodermate Mitochondrial:8
+
+
+item:Map View
+itemmethod:(mapview in1 -pbl $PBL -npp $NPP; /bin/rm -f in1)&
+itemhelp:mapview.help
+
+in:in1
+informat:gde
+insave:
+
+arg:PBL
+arglabel:Pixel Between Lines
+argtype:slider
+argvalue:10
+argmin:1
+argmax:15
+
+arg:NPP
+arglabel:Nucleotides Per Pixel
+argtype:slider
+argvalue:1
+argmin:1
+argmax:20
+
+arg:LWIDTH
+arglabel:Line Thickness
+argtype:slider
+argvalue:2
+argmin:1
+argmax:5
+
+item:--------------------------
+item:Add a new DNA blast db
+itemmethod:xterm -e formatdb -i $sourcefile -p T -o T; /usr/local/bio/GDE/installBLASTDBPROT.pl $sourcefile $menuname;
+
+arg:sourcefile
+argtype:text
+arglabel: enter the file name
+
+arg:menuname
+argtype:text
+arglabel: enter the name of the DB
+
+menu:Phylogeny
+
+
+item:Phylip help
+itemmethod:(netscape /usr/local/bio/phylip/doc/$FILE)&
+
+arg:FILE
+argtype:choice_list
+arglabel:Which program?
+argchoice:clique:clique.html
+argchoice:consense:consense.html
+argchoice:contchar:contchar.html
+argchoice:contml:contml.html
+argchoice:contrast:contrast.html
+argchoice:discrete:discrete.html
+argchoice:distance:distance.html
+argchoice:dnaboot:dnaboot.html
+argchoice:dnacomp:dnacomp.html
+argchoice:dnadist:dnadist.html
+argchoice:dnainvar:dnainvar.html
+argchoice:dnaml:dnaml.html
+argchoice:dnamlk:dnamlk.html
+argchoice:dnamove:dnamove.html
+argchoice:dnapars:dnapars.html
+argchoice:dnapenny:dnapenny.html
+argchoice:dollop:dollop.html
+argchoice:dolmove:dolmove.html
+argchoice:dolpenny:dolpenny.html
+argchoice:draw:draw.html
+argchoice:drawgram:drawgram.html
+argchoice:drawtree:drawtree.html
+argchoice:factor:factor.html
+argchoice:fitch:fitch.html
+argchoice:gendist:gendist.html
+argchoice:kitsch:kitsch.html
+argchoice:main:main.html
+argchoice:mix:mix.html
+argchoice:move:move.html
+argchoice:neighbor:neighbor.html
+argchoice:penny:penny.html
+argchoice:protpars:protpars.html
+argchoice:read.me.general:read.me.general.html
+argchoice:restml:restml.html
+argchoice:seqboot:seqboot.html
+argchoice:sequence:sequence.html
+
+
+
+item:Phylip 3.5
+itemmethod:(rm -f outfile ; readseq -a -f12 in1 | sed "s/ YF//1" > infile;$PREEDIT  /usr/bin/X11/xterm -e  $PROGRAM;kedit outfile; treetool outtree; rm in1 )&
+ 
+arg:PROGRAM
+argtype:choice_list
+arglabel:Which program to run?
+argchoice:DNAPARS:dnapars
+argchoice:DNABOOT:dnaboot
+argchoice:DNAPENNY:dnapenny
+argchoice:DNAML:dnaml
+argchoice:DNAMLK:dnamlk
+argchoice:DNACOMP:dnacomp
+argchoice:DNAMOVE:dnamove
+argchoice:DNAINVAR:dnainvar
+argchoice:PROTPARS:protpars
+
+arg:PREEDIT
+argtype:chooser
+arglabel:Edit input before running?
+argchoice:No:
+argchoice:Yes:kedit infile;
+ 
+in:in1
+informat:genbank
+inmask:
+insave:
+
+
+
+item:Phylip DNA Distance methods 
+itemmethod:(readseq -a -f12 in1 | sed "s/ YF//1" > infile ;$PROG mv -f outfile infile; /usr/bin/X11/xterm -e dnadist;mv -f outfile infile; cp infile $DNA;  /usr/bin/X11/xterm -e neighbor; cp outtree intree; cp outfile $NEI; $PROGRAM  kedit outfile; cp outtree $TREE; treetool outtree;  /bin/rm -f in1 infile outfile intree outtree)&
+ 
+arg:EXPLAIN
+argtype:text
+arglabel:To produce a bootstraped tree choose DNADIST+NEIGHOR+CONSENSE
+
+
+arg:PROGRAM
+arglabel:Which method?
+argtype:chooser
+argchoice:DNADIST+NEIGHBOR:
+argchoice:DNADIST+NEIGHOR+CONSENSE: /usr/bin/X11/xterm -e  consense;
+
+arg:PROG
+arglabel:Run ?
+argtype:chooser
+argchoice:Run without Bootstrap:
+argchoice:Run with Bootstrap: /usr/bin/X11/xterm -e  seqboot;
+
+arg:DNA
+argtype:text
+arglabel:Name of DNADIST outfile?
+
+arg:NEI
+argtype:text
+arglabel:Name of NEIGHBOR outfile?
+
+arg:TREE
+argtype:text
+arglabel:Name of TREEFILE ?
+
+arg:PREEDIT
+argtype:chooser
+arglabel:Edit input before running?
+argchoice:No:
+argchoice:Yes:kedit infile;
+ 
+in:in1
+informat:genbank
+inmask:
+insave:
+
+item:Phylip PROTEIN Distance methods 
+itemmethod:(readseq -a -f12 in1 > infile ;$PROG mv -f outfile infile;  /usr/bin/X11/xterm -e protdist;mv -f outfile infile;  /usr/bin/X11/xterm -e neighbor; cp outtree intree; $PROGRAM  kedit outfile;treetool outtree;/bin/rm -f in1 infile outfile)&
+ 
+arg:PROGRAM
+arglabel:Which method?
+argtype:chooser
+argchoice:PROTDIST+NEIGHBOR:
+argchoice:PROTDIST+NEIGHOR+CONSENSE: /usr/bin/X11/xterm -e  consense;
+
+arg:PROG
+arglabel:Which method?
+argtype:chooser
+argchoice:Bootstrap: /usr/bin/X11/xterm -e  seqboot;
+argchoice:No Bootstrap:
+
+arg:PREEDIT
+argtype:chooser
+arglabel:Edit input before running?
+argchoice:No:
+argchoice:Yes:kedit  infile;
+ 
+in:in1
+informat:genbank
+inmask:
+insave:
+
+
+  
+
+
+menu:On-Line Res.
+item:test
+itemmethod:netscape http://test.com
+item:test
+itemmethod:netscape http://test.com
+item:test
+itemmethod:netscape http://test.com
+
+item:add a new website
+itemmethod:xterm -e /usr/local/biotools/GDE/newURL.pl $name $url
+
+arg:name
+argtype:text
+arglabel:Enter the site name
+
+arg:url
+argtype:text
+arglabel:Enter the URL (including http://)

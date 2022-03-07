@@ -1,0 +1,8 @@
+
+========================[ Feb 1, 2002  1:57 PM ]========================
+NOTE: CoreLib [002.003] FileOpen("HIV1POLDNA.fasta","r") failed
+Cannot open input database file. Formating failed...
+
+========================[ Feb 1, 2002  7:27 PM ]========================
+NOTE: CoreLib [002.003] FileOpen("SIVPOLPRO.fasta","r") failed
+Cannot open input database file. Formating failed...

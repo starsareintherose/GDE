@@ -1,0 +1,1340 @@
+menu:File
+
+item:test cmask output
+itemmethod: textedit in1
+
+in:in1
+informat:colormask
+
+item:New sequence   <meta N>
+itemmethod:echo "$Type$Name" > out1
+itemmeta:n
+itemhelp:new_sequence.help
+ 
+arg:Name 
+argtype:text 
+arglabel:New Sequence name? 
+argtext:New 
+ 
+arg:Type 
+argtype:choice_list 
+arglabel:Type? 
+argchoice:DNA/RNA:# 
+argchoice:Amino Acid:% 
+argchoice:Text:\"
+argchoice:Mask:@ 
+
+out:out1
+outformat:flat
+
+item:Import Foreign Format
+itemmethod:cp $INPUTFILE OUTFILE.tmp;readseq OUTFILE.tmp -a -f2 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp
+itemhelp:readseq.help
+
+arg:INPUTFILE
+argtype:text
+arglabel:Name of foreign file?
+
+out:OUTPUTFILE
+outformat:genbank
+
+item:Export Foreign Format
+itemmethod:readseq INPUTFILE -a -f$FORMAT > $OUTPUTFILE
+itemhelp:readseq.help
+
+arg:FORMAT
+argtype:choice_list
+argchoice:IG/Stanford:1
+argchoice:GenBank:2
+argchoice:NBRF:3
+argchoice:EMBL:4
+argchoice:GCG:5
+argchoice:DNA Strider:6
+argchoice:Fitch:7
+argchoice:Pearson:8
+argchoice:Zuker:9
+argchoice:Olsen:10
+argchoice:Phylip v3.2:11
+argchoice:Phylip v3.3:12
+argchoice:Plain text:13
+
+arg:OUTPUTFILE
+argtype:text
+arglabel:Save as?
+
+in:INPUTFILE
+informat:genbank
+
+
+item:Save Selection
+itemmethod: cat $SAVE_FUNC > $Name
+itemhelp:save_selection.help
+
+arg:SAVE_FUNC
+argtype:chooser
+arglabel:File format
+argchoice:Flat:in1
+argchoice:Genbank:in2
+argchoice:GDE/HGL:in3
+
+arg:Name
+argtype:text
+arglabel:File name?
+
+in:in1
+informat:flat
+
+in:in2
+informat:genbank
+
+in:in3
+informat:gde
+
+item:Print Selection
+itemmethod:(PrintStrat in1 $SCALE > in1.tmp; $CMD -P$PRINTER in1.tmp; /bin/rm -f in1 in1.tmp)&
+itemhelp:print_alignment.help
+ 
+arg:SCALE
+argtype:slider
+arglabel:Reduce printout by?
+argmin:1
+argmax:20
+argvalue:1
+
+arg:CMD
+argtype:chooser
+argchoice:Lpr:lpr
+argchoice:Enscript Gaudy:enscript -G -q
+argchoice:Enscript Two column:enscript -2rG
+ 
+arg:PRINTER
+argtype:text
+arglabel:Which printer?
+argtext:lp
+ 
+in:in1
+informat:gde
+insave:
+
+menu:Edit
+
+item:Sort
+itemmethod:(heapsortHGL in1 $PRIM_KEY $SEC_KEY > in1.tmp ; gde in1.tmp;/bin/rm -f in1*)&
+itemhelp:heapsortHGL.help
+
+arg:PRIM_KEY
+argtype:choice_list
+argchoice:Group:group-ID
+argchoice:type:type
+argchoice:name:name
+argchoice:Sequence ID:sequence-ID
+argchoice:creator:creator
+argchoice:offset:offset
+arglabel:Primary sort field?
+
+arg:SEC_KEY
+argtype:choice_list
+argchoice:None:
+argchoice:Group:group-ID
+argchoice:type:type
+argchoice:name:name
+argchoice:Sequence ID:sequence-ID
+argchoice:creator:creator
+argchoice:offset:offset
+arglabel:Secondary sort field?
+
+in:in1
+informat:gde
+insave:
+
+item:extract
+itemmethod:(gde in1;/bin/rm -f in1)&
+
+in:in1
+informat:gde
+inmask:
+insave:
+
+menu:DNA/RNA
+
+item:Translate...
+itemmethod:Translate -tbl $TBL -frame $FRAME -min_frame $MNFRM $LTRCODE in1 > out1
+
+arg:FRAME
+argtype:chooser
+arglabel:Which reading frame?
+argchoice:First:1
+argchoice:Second:2
+argchoice:Third:3
+argchoice:All six:6
+
+arg:MNFRM
+arglabel:Minimum length of AA sequence to translate?
+argtype:slider
+argmin:0
+argmax:100
+argvalue:20
+
+arg:LTRCODE
+argtype:chooser
+arglabel:Translate to:
+argchoice:Single letter codes:
+argchoice:Triple letter codes:-3
+
+arg:TBL
+arglabel:Codon table?
+argtype:chooser
+argchoice:universal:1
+argchoice:mycoplasma:2
+argchoice:yeast:3
+argchoice:Vert. mito.:4
+in:in1
+informat:gde
+
+out:out1
+outformat:gde
+
+item:Dot plot
+itemmethod:(DotPlotTool in1 ; /bin/rm -f in1)&
+itemhelp:DotPlotTool.help
+
+in:in1
+informat:gde
+insave:
+
+item:Clustal alignment
+itemmethod:(tr '%#' '>'<in1>clus_in;clustalw -quicktree -output=PIR -infile=clus_in -align  > in1.rpt;sed "s/>DL;/#/g" < clus_in.pir> in1;$REPORT gde in1;/bin/rm -f clus_in* in1*   )&
+
+itemhelp:clustal_help
+
+arg:KTUP
+argtype:slider
+arglabel:K-tuple size for pairwise search
+argmin:1
+argmax:10
+argvalue:2
+
+arg:WIN
+argtype:slider
+arglabel:Window size
+argmin:1
+argmax:10
+argvalue:4
+
+arg:Trans
+argtype:chooser
+arglabel:Transitions weighted?
+argchoice:Yes:/TRANSIT
+argchoice:No:
+
+arg:FIXED
+argtype:slider
+arglabel:Fixed gap penalty
+argmin:1
+argmax:100
+argvalue:10
+
+arg:FLOAT
+arglabel:Floating gap penalty
+argtype:slider
+argmin:1
+argmax:100
+argvalue:10
+
+arg:REPORT
+argtype:chooser
+arglabel:View assembly report?
+argchoice:No:
+argchoice:Yes:textedit in1.rpt&
+
+ 
+in:in1
+informat:flat
+insave:
+
+item:Variable Positions
+itemmethod:varpos $REV < in1 > out1
+
+arg:REV
+argtype:chooser
+arglabel:Highlight (darken)
+argchoice:Conserved positions:
+argchoice:variable positions:-rev
+
+in:in1
+informat:flat
+
+out:out1
+outformat:colormask
+
+item:Phrap
+itemmethod:readseq in1 -a -f8 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp; phrap OUTPUTFILE; readseq -a -f2 OUTPUTFILE.contigs > out1;/bin/rm -rf OUTPUT*;
+
+in:in1
+informat:genbank
+
+out:out1
+outformat:genbank
+
+
+
+item:Find all <meta-f>
+itemmethod:findall $SEARCH $PRCNT $CASE $UT -match $MAT -mismatch $MIS < in1 > out1;
+itemhelp:findall.help 
+itemmeta:f
+ 
+arg:SEARCH
+argtype:text
+arglabel:Search String
+ 
+arg:PRCNT
+argtype:slider
+arglabel:Percent mismatch
+argmin:0
+argmax:75
+argvalue:10
+ 
+arg:CASE
+argtype:chooser
+arglabel:Case
+argchoice:Upper equals lower:
+argchoice:Upper not equal lower:-case
+ 
+arg:UT
+argtype:chooser
+arglabel:U equal T?
+argchoice:Yes:-u=t
+argchoice:No:
+argvalue:0
+ 
+arg:MAT
+arglabel:Match color
+argtype:choice_list
+argchoice:yellow:1
+argchoice:violet:2
+argchoice:red:3
+argchoice:aqua:4
+argchoice:green:5
+argchoice:blue:6
+argchoice:grey:11
+argchoice:black:8
+argvalue:2
+ 
+arg:MIS
+argtype:choice_list
+arglabel:Mismatch color
+argchoice:yellow:1
+argchoice:violet:2
+argchoice:red:3
+argchoice:aqua:4
+argchoice:green:5
+argchoice:blue:6
+argchoice:grey:11
+argchoice:black:8
+argvalue:7
+
+in:in1
+informat:flat
+ 
+out:out1
+outformat:colormask
+
+item:Sequence Consensus
+itemmethod:(MakeCons in1 $METHOD $MASK > out1)
+itemhelp:MakeCons.help
+
+arg:METHOD
+arglabel:Method
+argtype:chooser
+argchoice:IUPAC:-iupac
+argchoice:Majority:-majority $PERCENT
+
+arg:MASK
+argtype:chooser
+arglabel:Create a new:
+argchoice:Sequence:
+argchoice:Selection Mask: | Consto01mask
+
+arg:PERCENT
+arglabel:Minimum Percentage for Majority
+argtype:slider
+argmin:50
+argmax:100
+argvalue:75
+
+in:in1
+informat:gde
+
+out:out1
+outformat:gde
+
+
+item:MFOLD
+itemmethod:(tr 'a-z' 'A-Z' < seqGB > .GDE.tmp.caps; ZUKERGDE.sh .GDE.tmp.caps $CT $GDE_HELP_DIR/ZUKER/ > out1 && $METHOD < out1; Zuk_to_gen < $CT >file.gen; gde file.gen& textedit RegionTable; /bin/rm -f RegionTable out1 seqGB* .GDE.tmp.caps)&
+itemhelp:MFOLD.help
+
+in:seqGB
+informat:genbank
+insave:
+
+arg:METHOD
+argtype:chooser
+arglabel:RNA type
+argchoice:Fold Linear RNA:lrna
+argchoice:Fold Circular RNA:crna
+
+arg:CT
+argtype:text
+arglabel:Pairing(ct)  File Name
+argtext:mfold_out
+
+
+item:Draw Secondary structure
+itemmethod:(LoopTool $TEMPLATE in1 ; /bin/rm -f in1) &
+itemhelp:LoopTool.help
+
+arg:TEMPLATE
+argtype:chooser
+arglabel:Use template file ./loop.temp?
+argchoice:No:
+argchoice:Yes:-t loop.temp
+
+in:in1
+informat:genbank
+insave:
+
+item:Highlight helix
+itemmethod:readseq -a -f8 in1 | sed "s/>HELIX/\"HELIX/" > in1.flat; sho_helix < in1.flat > out1;rm in1.flat
+itemhelp:sho_helix.help
+
+in:in1
+informat:genbank
+
+out:out1
+outformat:colormask
+
+
+#Menu for DNA/RNA
+
+item:blastn
+itemmethod:(sed "s/[#%]/>/" <in1 > in1.f; /usr/local/biotools/blast/blastall -p blastn -d $BLASTDB -i in1.f -W $WORDLEN -M $MATCH  > in1.tmp; /usr/openwin/bin/textedit in1.tmp; rm in1*)&
+
+in:in1
+informat:flat
+insave:
+
+arg:BLASTDB
+argtype:choice_list
+arglabel:Which Database
+argchoice:Genome HIV position:/var/www/cgi-bin/db/genomeHIV.fasta
+argchoice:genbank update:$GDE_HELP_DIR/BLAST/genupdate
+argchoice:HIV-1:/var/www/cgi-bin/db/hivallsequencesGB-31-10.fasta
+argchoice:HIV-1 Subtype:/var/www/cgi-bin/db/subcomplete.fasta
+argchoice:HIV-1 HXB2 Numb:/var/www/cgi-bin/db/HXB2.fasta
+argchoice:HIV-1 HXB2 Numb:/var/www/cgi-bin/db/HXB2.fasta
+arg:WORDLEN
+argtype:slider
+arglabel:Word Size
+argmin:4
+argmax:18
+argvalue:12
+
+arg:MATCH
+argtype:slider
+arglabel:Match Score
+argmin:1
+argmax:10
+argvalue:5
+
+arg:MMSCORE
+argtype:slider
+arglabel:Mismatch Score
+argmin:-10
+argmax:-1
+argvalue:-5
+
+item:blastx
+itemmethod:(sed "s/[#%]/>/" <in1 > in1.f; cp $GDE_HELP_DIR/BLAST/PAM??? .; blastx $BLASTDB in1.f W=$WORDLEN M=$Matrix C=$CODE> in1.tmp; textedit in1.tmp; rm in1* PAM???)&
+
+in:in1
+informat:flat
+insave:
+
+arg:BLASTDB
+argtype:choice_list
+arglabel:Which Database
+argchoice:pir1:$GDE_HELP_DIR/BLAST/pir
+argchoice:genpept:$GDE_HELP_DIR/BLAST/genpept
+
+arg:WORDLEN
+argtype:slider
+arglabel:Word Size
+argmin:1
+argmax:5
+argvalue:3
+
+arg:Matrix
+arglabel:Substitution Matrix:
+argtype:choice_list
+argchoice:PAM120:PAM120
+argchoice:PAM250:PAM250
+
+arg:CODE
+argtype:choice_list
+arglabel:Genetic Code
+argchoice:Standard or Universal:0
+argchoice:Vertebrate Mitochondrial:1
+argchoice:Yeast Mitochondrial:2
+argchoice:Mold Mitochondrial and Mycoplasma:3
+argchoice:Invertebrate Mitochondrial:4
+argchoice:Ciliate Macronuclear:5
+argchoice:Protozoan Mitochondrial:6
+argchoice:Plant Mitochondrial:7
+argchoice:Echinodermate Mitochondrial:8
+
+
+item:FASTA (DNA/RNA)
+itemmethod:(sed "s/[#%]/>/"<in1 >in1.fasta;fasta -Q -d $NUMOFALN $MATRIX in1.fasta $DBASE > in1.out; textedit in1.out;\rm in1*) &
+itemhelp:FASTA.help
+
+in:in1
+informat:flat
+
+arg:DBASE
+argtype:choice_list
+arglabel:Database
+argchoice:GenBank Primate:$GDE_HELP_DIR/FASTA/GENBANK/gbpri.seq\ 1
+argchoice:GenBank Rodent:$GDE_HELP_DIR/FASTA/GENBANK/gbrod.seq\ 1
+argchoice:GenBank all Mammal:$GDE_HELP_DIR/FASTA/GENBANK/gbmam.seq\ 1
+argchoice:GenBank verteBrates:$GDE_HELP_DIR/FASTA/GENBANK/gbvrt.seq\ 1
+argchoice:GenBank Inverts:$GDE_HELP_DIR/FASTA/GENBANK/gbinv.seq\ 1
+argchoice:GenBank pLants:$GDE_HELP_DIR/FASTA/GENBANK/gbpln.seq\ 1
+argchoice:GenBank Struct RNA:$GDE_HELP_DIR/FASTA/GENBANK/gbrna.seq\ 1
+argchoice:GenBank euk. Organelles:$GDE_HELP_DIR/FASTA/GENBANK/gborg.seq\ 1
+argchoice:GenBank phaGe:$GDE_HELP_DIR/FASTA/GENBANK/gbphg.seq\ 1
+argchoice:GenBank bacTeria:$GDE_HELP_DIR/FASTA/GENBANK/gbbct.seq\ 1
+argchoice:GenBank sYnthetic:$GDE_HELP_DIR/FASTA/GENBANK/gbsyn.seq\ 1
+argchoice:GenBank Viral:$GDE_HELP_DIR/FASTA/GENBANK/gbvrl.seq\ 1
+argchoice:GenBank Unannotated:$GDE_HELP_DIR/FASTA/GENBANK/gbuna.seq\ 1
+
+arg:NUMOFALN
+argtype:slider
+arglabel:Number of Alignment to Report
+argmin:1
+argmax:100
+argvalue:20
+
+arg:MATRIX
+arglabel:Which SMATRIX
+argtype:choice_list
+argchoice:Default:
+argchoice:altdiag.mat:-s $GDE_HELP_DIR/FASTA/MATRIX/altdiag.mat
+argchoice:altprot.mat:-s $GDE_HELP_DIR/FASTA/MATRIX/altprot.mat
+argchoice:dna.mat:-s $GDE_HELP_DIR/FASTA/MATRIX/dna.mat
+argchoice:prot.mat:-s $GDE_HELP_DIR/FASTA/MATRIX/prot.mat
+
+menu:DB
+item:DB X8873
+itemmethod:cp $INPUTFILE OUTFILE.tmp;readseq OUTFILE.tmp -a -f2 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp
+itemhelp:readseq.help
+
+arg:INPUTFILE
+argtype:chooser
+arglabel:Databases
+argchoice:subtype:/home/database/DNA/subtyperef/subcomplete.fasta 
+argchoice:SIVENVDNA.fasta:/home/database/DNA/SIVENVDNA.fasta
+
+out:OUTPUTFILE
+outformat:genbank
+
+item:HIV-1 Subtype
+itemmethod:cp $INPUTFILE OUTFILE.tmp;readseq OUTFILE.tmp -a -f2 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp
+itemhelp:readseq.help
+
+arg:INPUTFILE
+argtype:choice_list
+arglabel:HIV-1 Subtype genome regions
+argchoice:CG:/home/database/DNA/subtyperef/subcomplete.fasta 
+argchoice:sub5ltr.fasta:/home/database/DNA/subtyperef/sub5ltr.fasta
+argchoice:sub5ltrU3.fasta:/home/database/DNA/subtyperef/sub5ltrU3.fasta
+argchoice:sub5ltrU5.fasta:/home/database/DNA/subtyperef/sub5ltrU5.fasta
+argchoice:subenv.fasta:/home/database/DNA/subtyperef/subenv.fasta
+argchoice:subenv-gp120.fasta:/home/database/DNA/subtyperef/subenv-gp120.fasta
+argchoice:subenv-gp41.fasta:/home/database/DNA/subtyperef/subenv-gp41.fasta
+argchoice:subenvv3.fasta:/home/database/DNA/subtyperef/subenvv3.fasta
+argchoice:subgag.fasta:/home/database/DNA/subtyperef/subgag.fasta
+argchoice:subgag-p17.fasta:/home/database/DNA/subtyperef/subgag-p17.fasta
+argchoice:subgag-p24.fasta:/home/database/DNA/subtyperef/subgag-p24.fasta
+argchoice:subgag-pol.fasta:/home/database/DNA/subtyperef/subgag-pol.fasta
+argchoice:subpol.fasta:/home/database/DNA/subtyperef/subpol.fasta
+argchoice:subpol-p15RNAase.fasta:/home/database/DNA/subtyperef/subpol-p15RNAase.fasta
+argchoice:subpol-p31integrase.fasta:/home/database/DNA/subtyperef/subpol-p31integrase.fasta
+argchoice:subpol-p51RT.fasta:/home/database/DNA/subtyperef/subpol-p51RT.fasta
+argchoice:subpol-protease.fasta:/home/database/DNA/subtyperef/subpol-protease.fasta
+argchoice:subrevCDS.fasta:/home/database/DNA/subtyperef/subrevCDS.fasta
+argchoice:subrevexon1.fasta:/home/database/DNA/subtyperef/subrevexon1.fasta
+argchoice:subrevexon2.fasta:/home/database/DNA/subtyperef/subrevexon2.fasta
+argchoice:subrevintron.fasta:/home/database/DNA/subtyperef/subrevintron.fasta
+argchoice:subTAR.fasta:/home/database/DNA/subtyperef/subTAR.fasta
+argchoice:subtatCDS.fasta:/home/database/DNA/subtyperef/subtatCDS.fasta
+argchoice:subtatexon1.fasta:/home/database/DNA/subtyperef/subtatexon1.fasta
+argchoice:subtatexon2.fasta:/home/database/DNA/subtyperef/subtatexon2.fasta
+argchoice:subtatintron.fasta:/home/database/DNA/subtyperef/subtatintron.fasta
+argchoice:subvif.fasta:/home/database/DNA/subtyperef/subvif.fasta
+argchoice:subvpr.fasta:/home/database/DNA/subtyperef/subvpr.fasta
+argchoice:subvpu.fasta:/home/database/DNA/subtyperef/subvpu.fasta
+argchoice:subnef.fasta:/home/database/DNA/subtyperef/subnef.fasta
+out:OUTPUTFILE
+outformat:genbank
+
+
+
+item:HXB2
+itemmethod:cp $INPUTFILE OUTFILE.tmp;readseq OUTFILE.tmp -a -f2 > OUTPUTFILE;/bin/rm -f OUTFILE.tmp
+itemhelp:readseq.help
+
+arg:INPUTFILE
+argtype:chooser
+arglabel:HXB2 Reference Seq
+argchoice:CG:/home/database/DNA/HXB2.fasta
+
+out:OUTPUTFILE
+outformat:genbank
+
+menu:Protein
+
+item:Clustal Protein Alignment
+itemmethod:(tr '%#"' '>' <in1>clus_in;clustalw /output=PIR /infile=clus_in /align /ktup=$KTUP /window=$WIN $Matrx  /fixedgap=$FIXED /floatgap=$FLOAT > in1.rpt;sed "s/>P1;/%/g" < clus_in.pir > in1;$REPORT gde in1;/bin/rm -f in1* clus_in* gde* )&
+itemhelp:clustal_help
+
+arg:KTUP
+argtype:slider
+arglabel:K-tuple size for pairwise search
+argmin:1
+argmax:10
+argvalue:2
+
+arg:WIN
+argtype:slider
+arglabel:Window size
+argmin:1
+argmax:10
+argvalue:4
+
+arg:Matrx
+argtype:chooser
+arglabel:Weighting matrix
+argchoice:PAM 250:PAM250
+argchoice:PAM 100:PAM100
+argchoice:Identity:ID
+
+arg:FIXED
+argtype:slider
+arglabel:Fixed gap penalty
+argmin:1
+argmax:100
+argvalue:10
+ 
+arg:FLOAT
+arglabel:Floating gap penalty
+argtype:slider
+argmin:1
+argmax:100
+argvalue:10
+
+arg:REPORT
+argtype:chooser
+arglabel:View assembly report?
+argchoice:No:
+argchoice:Yes:textedit in1.rpt&
+ 
+in:in1
+informat:flat
+insave:
+
+#Menu for Protein
+
+item:blastp
+itemmethod:(sed "s/[#%]/>/" <in1 > in1.f; cp $GDE_HELP_DIR/BLAST/PAM??? .; blastp $BLASTDB in1.f W=$WORDLEN M=$Matrix > in1.tmp;textedit in1.tmp; rm in1* PAM???)&
+
+in:in1
+informat:flat
+insave:
+
+arg:BLASTDB
+argtype:choice_list
+arglabel:Which Database
+argchoice:pir:$GDE_HELP_DIR/BLAST/pir
+argchoice:genpept:$GDE_HELP_DIR/BLAST/genpept
+argchoice:local:$GDE_HELP_DIR/BLAST/local_db
+
+arg:Matrix
+arglabel:Substitution Matrix:
+argtype:choice_list
+argchoice:PAM120:PAM120
+argchoice:PAM250:PAM250
+
+arg:WORDLEN
+argtype:slider
+arglabel:Word Size
+argmin:1
+argmax:5
+argvalue:3
+
+item:tblastn
+itemmethod:(sed "s/[#%]/>/" <in1 > in1.f; cp $GDE_HELP_DIR/BLAST/PAM??? .; tblastn $BLASTDB in1.f W=$WORDLEN M=$Matrix C=$CODE > in1.tmp; textedit in1.tmp; rm in1* PAM???)&
+
+in:in1
+informat:flat
+insave:
+
+arg:BLASTDB
+argtype:choice_list
+arglabel:Which Database
+argchoice:genbank:$GDE_HELP_DIR/BLAST/genbank
+argchoice:genbank update:$GDE_HELP_DIR/BLAST/genupdate
+
+arg:Matrix
+arglabel:Substitution Matrix:
+argtype:choice_list
+argchoice:PAM120:PAM120
+argchoice:PAM250:PAM250
+
+arg:WORDLEN
+argtype:slider
+arglabel:Word Size
+argmin:4
+argmax:18
+argvalue:12
+
+arg:CODE
+argtype:choice_list
+arglabel:Genetic Code
+argchoice:Standard or Universal:0
+argchoice:Vertebrate Mitochondrial:1
+argchoice:Yeast Mitochondrial:2
+argchoice:Mold Mitochondrial and Mycoplasma:3
+argchoice:Invertebrate Mitochondrial:4
+argchoice:Ciliate Macronuclear:5
+argchoice:Protozoan Mitochondrial:6
+argchoice:Plant Mitochondrial:7
+argchoice:Echinodermate Mitochondrial:8
+
+item:blast3
+itemmethod:(sed "s/[#%]/>/" <in1 > in1.f; cp $GDE_HELP_DIR/BLAST/PAM??? .; blast3 $BLASTDB in1.f W=$WORDLEN M=$Matrix > in1.tmp;textedit in1.tmp; rm in1* PAM???)&
+
+in:in1
+informat:flat
+insave:
+
+arg:BLASTDB
+argtype:choice_list
+arglabel:Which Database
+argchoice:pir1:$GDE_HELP_DIR/BLAST/pir
+argchoice:genpept:$GDE_HELP_DIR/BLAST/genpept
+
+arg:Matrix
+arglabel:Substitution Matrix:
+argtype:choice_list
+argchoice:PAM120:PAM120
+argchoice:PAM250:PAM250
+
+arg:WORDLEN
+argtype:slider
+arglabel:Word Size
+argmin:1
+argmax:5
+argvalue:3
+
+item:FASTA (Protein)
+itemmethod:(sed "s/[#%]/>/"<in1 >in1.fasta;fasta -Q -d $NUMOFALN $MATRIX in1.fasta $DBASE > in1.out; textedit in1.out;\rm in1*) &
+itemhelp:FASTA.help
+
+in:in1
+informat:flat
+
+arg:DBASE
+argtype:choice_list
+arglabel:Database
+argchoice:NBRF PIR1:$GDE_HELP_DIR/FASTA/PIR/pir1.dat\ 2
+argchoice:NBRF PIR2:$GDE_HELP_DIR/FASTA/PIR/pir2.dat\ 2
+argchoice:NBRF PIR3:$GDE_HELP_DIR/FASTA/PIR/pir3.dat\ 2
+
+
+arg:NUMOFALN
+argtype:slider
+arglabel:Number of Alignment to Report
+argmin:1
+argmax:100
+argvalue:20
+
+arg:MATRIX
+arglabel:Which SMATRIX
+argtype:choice_list
+argchoice:Default:
+argchoice:Minimum mutation matrix:-s $GDE_HELP_DIR/FASTA/MATRIX/codaa.mat
+argchoice:Identity matrix:-s $GDE_HELP_DIR/FASTA/MATRIX/idnaa.mat
+argchoice:Identity matrix for mismatches:-s $GDE_HELP_DIR/FASTA/MATRIX/idpaa.mat
+argchoice:PAM250:-s $GDE_HELP_DIR/FASTA/MATRIX/pam250.mat
+argchoice:PAM120:-s $GDE_HELP_DIR/FASTA/MATRIX/pam120.mat
+
+menu:Seq management
+
+item:Assemble Contigs
+itemmethod:(sed "s/#/>/"<in1 >in1.tmp; CAP2 in1.tmp $OVERLAP $PMATCH > out1;/bin/rm -f in1.tmp)
+itemhelp:CAP2.help
+
+arg:OVERLAP
+argtype:slider
+arglabel:Minimum overlap?
+argmin:5
+argmax:100
+argvalue:20
+
+arg:PMATCH
+argtype:slider
+arglabel:Percent match required within overlap
+argmin:25
+argmax:100
+argvalue:90
+
+in:in1
+informat:flat
+
+out:out1
+outformat:gde
+outoverwrite:
+
+item:Map View
+itemmethod:(mapview in1 -pbl $PBL -npp $NPP; /bin/rm -f in1)&
+itemhelp:mapview.help
+
+in:in1
+informat:gde
+insave:
+
+arg:PBL
+arglabel:Pixel Between Lines
+argtype:slider
+argvalue:10
+argmin:1
+argmax:15
+
+arg:NPP
+arglabel:Nucleotides Per Pixel
+argtype:slider
+argvalue:1
+argmin:1
+argmax:20
+
+arg:LWIDTH
+arglabel:Line Thickness
+argtype:slider
+argvalue:2
+argmin:1
+argmax:5
+
+
+item:Restriction sites
+itemmethod:(cp $ENZ in1.tmp ; $PRE_EDIT Restriction in1.tmp in1 > out1 ; rm in1.tmp);
+itemhelp:Restriction.help
+
+arg:ENZ
+argtype:text
+arglabel:Enzyme file
+argtext:$GDE_HELP_DIR/DATA_FILES/enzymes
+
+arg:PRE_EDIT
+argtype:chooser
+arglabel:Edit enzyme file first?
+argchoice:Yes:textedit in1.tmp;
+argchoice:No: 
+
+in:in1
+informat:flat
+
+out:out1
+outformat:colormask
+
+menu:Phylogeny
+
+item:DeSoete Tree fit
+itemmethod: (readseq -a -f8 in1>in1.flat;count -t $CORR in1.flat> in1.tmp ; lsadt<in1.tmp -seed $SEED -init $INIT -empty -99.9 > in1.out ; $DISPLAY_FUNC in1.out;/bin/rm -f in1* )&
+itemhelp:lsadt.help
+
+in:in1
+informat:genbank
+insave:
+inmask:
+
+arg:CORR
+arglabel:Distance correction?
+argtype:chooser
+argchoice:Olsen:-c=olsen
+argchoice:Jukes/Cantor:-c=jukes
+argchoice:None:-c=none
+
+arg:INIT
+arglabel:Initial parameter estimate
+argtype:choice_list
+argchoice:uniformly distributed random numbers:1
+argchoice:error-perturbed data:2
+argchoice:original distance data from input matrix:3
+
+arg:SEED
+argtype:slider
+arglabel:Random number seed
+argmin:0
+argmax:65535
+argvalue:12345
+ 
+arg:DISPLAY_FUNC
+argtype:chooser
+arglabel:View tree using
+argchoice:TextEdit:textedit
+argchoice:Treetool:treetool < 
+
+item:Phylip help
+itemmethod:(textedit $GDE_HELP_DIR/PHYLIP/$FILE)&
+
+arg:FILE
+argtype:choice_list
+arglabel:Which program?
+argchoice:boot:boot.doc
+argchoice:clique:clique.doc
+argchoice:consense:consense.doc
+argchoice:contchar:contchar.doc
+argchoice:contml:contml.doc
+argchoice:contrast:contrast.doc
+argchoice:discrete:discrete.doc
+argchoice:distance:distance.doc
+argchoice:dnaboot:dnaboot.doc
+argchoice:dnacomp:dnacomp.doc
+argchoice:dnadist:dnadist.doc
+argchoice:dnainvar:dnainvar.doc
+argchoice:dnaml:dnaml.doc
+argchoice:dnamlk:dnamlk.doc
+argchoice:dnamove:dnamove.doc
+argchoice:dnapars:dnapars.doc
+argchoice:dnapenny:dnapenny.doc
+argchoice:dolboot:dolboot.doc
+argchoice:dollop:dollop.doc
+argchoice:dolmove:dolmove.doc
+argchoice:dolpenny:dolpenny.doc
+argchoice:draw:draw.doc
+argchoice:drawgram:drawgram.doc
+argchoice:drawtree:drawtree.doc
+argchoice:factor:factor.doc
+argchoice:fitch:fitch.doc
+argchoice:gendist:gendist.doc
+argchoice:kitsch:kitsch.doc
+argchoice:main:main.doc
+argchoice:mix:mix.doc
+argchoice:move:move.doc
+argchoice:neighbor:neighbor.doc
+argchoice:penny:penny.doc
+argchoice:protpars:protpars.doc
+argchoice:read.me.general:read.me.general.doc
+argchoice:restml:restml.doc
+argchoice:seqboot:seqboot.doc
+argchoice:sequence:sequence.doc
+
+
+item:Phylip 3.4
+itemmethod:(rm -f outfile ; readseq -a -f12 in1 | sed "s/ YF//1" > infile;$PREEDIT shelltool $PROGRAM;textedit outfile;rm in1 )&
+ 
+arg:PROGRAM
+argtype:choice_list
+arglabel:Which program to run?
+argchoice:DNAPARS:dnapars
+argchoice:DNABOOT:dnaboot
+argchoice:DNAPENNY:dnapenny
+argchoice:DNAML:dnaml
+argchoice:DNAMLK:dnamlk
+argchoice:DNACOMP:dnacomp
+argchoice:DNAMOVE:dnamove
+argchoice:DNAINVAR:dnainvar
+argchoice:PROTPARS:protpars
+
+arg:PREEDIT
+argtype:chooser
+arglabel:Edit input before running?
+argchoice:No:
+argchoice:Yes:textedit infile;
+ 
+in:in1
+informat:genbank
+inmask:
+insave:
+ 
+item:Phylip Distance methods
+itemmethod:(readseq -a -f12 in1 | sed "s/ YF//1" > infile ; $PREEDIT shelltool seqboot; mv -f outfile infile; shelltool dnadist;mv -f outfile infile; shelltool neighbor; cp outtree intree; $PROGRAM  textedit outfile;/bin/rm -f in1 infile outfile)&
+ 
+arg:PROGRAM
+arglabel:Which method?
+argtype:chooser
+argchoice:DNADIST:mv -f infile outfile;
+argchoice:Fitch:shelltool fitch;
+argchoice:Kitsch:shelltool kitsch;
+argchoice:Neighbor:shelltool neighbor;
+argchoice:Full:shelltool consense;
+
+
+arg:PREEDIT
+argtype:chooser
+arglabel:Edit input before running?
+argchoice:No:
+argchoice:Yes:textedit infile;
+ 
+in:in1
+informat:genbank
+inmask:
+insave:
+
+menu:W
+item:Stanford
+itemmethod:(readseq in1 -a -f8 > infile.fasta; netscape http://hiv-4.stanford.edu/cgi-bin/hivseqweb.pl?uploaded_file=infile.fasta)&
+in:in1
+informat:genbank
+item:Los Alamos DB Search
+itemmethod:(netscape http://hiv-web.lanl.gov/cgi-bin/hivDB3/public/wdb/ssampublic)&
+item:Retroviruses NCBI
+itemmethod:(netscape http://www.ncbi.nlm.nih.gov/retroviruses/)&
+item:SNAP (sy/nosy)&
+itemmethod:(netscape http://hiv-web.lanl.gov/SNAP/WEBSNAP/SNAP.html)& 
+item:PubMed
+itemmethod:(netscape http://www.ncbi.nlm.nih.gov/Entrez/)
+
+
+in:in1
+informat:genbank
+
+
+
+
+menu:Email
+
+item:BLASTN
+itemmethod:(echo BLASTPROGRAM blastn > in1.tmp; echo DATALIB $DBASE >> in1.tmp; echo MATCH $MSCORE >> in1.tmp; echo BEGIN >> in1.tmp; sed "s/-//g" < in1 | tr '@%#' '>' >> in1.tmp; Mail BLAST@GENBANK.BIO.NET < in1.tmp; rm in1 in1.tmp) &
+
+arg:DBASE
+argtype:choice_list
+arglabel:Which Database?
+argchoice:GenBank Qtrly & Updates:GenBank
+argchoice:EMBL:embl
+
+arg:MSCORE
+argtype:slider
+arglabel:Match Score
+argmin:3
+argmax:7
+argvalue:5
+
+in:in1
+informat:flat
+insave:
+
+item:BLASTP
+itemmethod:(echo BLASTPROGRAM blastp >in1.tmp; echo DATALIB $DBASE >> in1.tmp; echo BEGIN >> in1.tmp; sed "s/-//g" < in1 | tr '@%#' '>' >> in1.tmp; Mail BLAST@GENBANK.BIO.NET < in1.tmp; rm in1 in1.tmp) &
+
+arg:DBASE
+argtype:choice_list
+arglabel:Which Database?
+argchoice:Swiss-Prot:swiss-prot
+argchoice:PIR:pir
+
+in:in1
+informat:flat
+insave:
+
+item:Fasta-(DNA)
+itemmethod:(echo DATALIB $DBASE > in1.tmp; echo KTUP $KPL >> in1.tmp; echo SCORES $TOP >> in1.tmp; echo ALIGNMENTS $ALNG >> in1.tmp; echo BEGIN >> in1.tmp; sed "s/-//g" < in1 | tr '@%#' '>' >> in1.tmp;Mail SEARCH@GENBANK.BIO.NET < in1.tmp; rm in1 in1.tmp) &
+
+arg:DBASE
+argtype:choice_list
+arglabel:Which GenBank Database?
+argchoice:Qrtly & Updates:GenBank/all
+argchoice:Updates:GenBank/new
+argchoice:Primate:GenBank/primate
+argchoice:Rodent:GenBank/rodent
+argchoice:Other-Mammalian:GenBank/other_mammalian
+argchoice:Other-Vertebrate:GenBank/other_vertebrate
+argchoice:Invertebrate:GenBank/invertebrate
+argchoice:Plant:GenBank/plant
+argchoice:Organelle:GenBank/organelle
+argchoice:Bacterial:GenBank/bacterial
+argchoice:Structural-RNA:GenBank/structural_rna
+argchoice:Viral:GenBank/viral
+argchoice:Phage:GenBank/phage
+argchoice:Synthetic:GenBank/synthetic
+argchoice:Unannotated:GenBank/unannotated
+
+arg:KPL
+argtype:slider
+arglabel:K-tuple window
+argmin:3
+argmax:6
+argvalue:4
+
+arg:TOP
+argtype:slider
+arglabel:Scores Displayed?
+argmin:1
+argmax:200
+argvalue:100
+
+arg:ALNG
+argtype:slider
+arglabel:# Alignments Displayed?
+argmin:1
+argmax:200
+argvalue:20
+
+in:in1
+informat:flat
+insave:
+
+item:Fasta-(PROTEIN)
+itemmethod:(echo DATALIB $DBASE > in1.tmp; echo KTUP $TPL >> in1.tmp; echo SCORES $SCRS >> in1.tmp; echo ALIGNMENTS $ALNMNTS >> in1.tmp; echo BEGIN >> in1.tmp; sed "s/-//g" < in1 | tr '@%#$' '>' >> in1.tmp; Mail SEARCH@GENBANK.BIO.NET < in1.tmp; rm in1 in1.tmp) &
+
+arg:DBASE
+argtype:choice_list
+arglabel:Which Protein Database?
+argchoice:Trans GenBank Qrtly:GenPept/all
+argchoice:Trans GenBank Daily:GenPept/new
+argchoice:Swiss-Protein:SWISS-PROT/all
+
+arg:TPL
+argtype:slider
+arglabel:K-TUP window
+argmin:1
+argmax:2
+argvalue:1
+
+arg:SCRS
+argtype:slider
+arglabel:# Scores Displayed?
+argmin:1
+argmax:200
+argvalue:100
+
+arg:ALNMNTS
+argtype:slider
+arglabel:# Alignments Displayed?
+argmin:1
+argmax:200
+argvalue:20
+
+in:in1
+informat:flat
+insave:
+
+item:GeneID
+itemmethod:($REPRINT > in1.tmp; echo Genomic Sequence >> in1.tmp; sed "s/-//g" < in1 | tr '@%#' '>' >> in1.tmp; Mail geneid@darwin.bu.edu < in1.tmp; rm in1 in1.tmp) &
+
+arg:REPRINT
+argtype:chooser
+arglabel:Do you want a GENEID reprint?
+argchoice:YES:echo "Preprint Request" >> in1.tmp
+argchoice:NO
+
+in:in1
+informat:flat
+insave:
+
+item:Sequence Retrieval
+itemmethod:(echo $REGEXP > in1.tmp; Mail RETRIEVE@GENBANK.BIO.NET < in1.tmp; rm in1.tmp) &
+
+arg:REGEXP
+argtype:text
+arglabel:Accession # or LOCUS name of sequence to retrieve
+
+item:Grail
+itemmethod:(echo Sequences $TOTALSEQS $ID > in1.tmp; sed "s/-//g" < in1 | tr '@%#' '>' >> in1.tmp; Mail grail@ornl.gov <in1.tmp; rm in1 in1.tmp) &
+
+arg:REGISTER
+argtype:chooser
+arglabel:Have you previously registered for Grail services?
+argchoice:YES
+argchoice:NO:echo "YOU MUST REGISTER"
+
+arg:TOTALSEQS
+argtype:text
+arglabel:Number of Sequences Being Sent to Grail?
+
+arg:ID
+argtype:text
+arglabel:User ID (MUST HAVE PREVIOUSLY REGISTERED)
+
+in:in1
+informat:flat
+insave:
+
+item:Grail Registration
+itemmethod:(echo Register > in1.tmp; echo $NAME >> in1.tmp; echo $ADDRESS >> in1.tmp; echo $PHONE >> in1.tmp; echo $EMAIL >> in1.tmp; Mail grail@ornl.gov < in1.tmp; rm in1.tmp)
+
+arg:NAME
+argtype:text
+arglabel:Your Name
+
+arg:ADDRESS
+argtype:text
+arglabel:Your Address
+
+arg:PHONE
+argtype:text
+arglabel:Your Phone Number
+
+arg:EMAIL
+argtype:text
+arglabel:Your E-Mail Address
+
+
+#
+# dgg added new readseq formats, 29 dec 92
+#
+
+item:Export Foreign Format
+itemmethod:readseq in1 -pipe -all -form=$FORMAT > $OUTPUTFILE
+itemhelp:readseq.help
+
+arg:FORMAT
+argtype:choice_list
+argchoice:GenBank:genbank
+argchoice:IG/Stanford:ig
+argchoice:NBRF:nbrf
+argchoice:EMBL:embl
+argchoice:GCG:gcg
+argchoice:DNA Strider:strider
+argchoice:Fitch:fitch
+argchoice:Pearson/Fasta:pearson
+argchoice:Zuker:zuker
+argchoice:Olsen:olsen
+argchoice:Phylip:phylip
+#argchoice:Phylip v3.2:phylip3.2
+argchoice:Plain text:raw
+argchoice:ASN.1:asn
+argchoice:PIR:pir
+argchoice:MSF:msf
+argchoice:PAUP:paup
+argchoice:Pretty:pretty -nametop -nameleft=3 -numright -nameright -numtop
+
+arg:OUTPUTFILE
+argtype:text
+arglabel:Save as?
+
+in:in1
+informat:genbank
+
+
+#
+#dgg addition for new readseq, 24 dec 92
+#
+
+item:Pretty Print
+itemmethod:readseq in1 -p -a -f=pretty $NAMELEFT $NAMERIGHT $NUMTOP $NUMBOT $NUMLEFT $NUMRIGHT -col=$COLS -width=$WIDTH $MATCH $GAPC > in1.pretty; (textedit in1.pretty; /bin/rm -f in1 in1.pretty)&
+itemhelp:readseq.help
+
+#nametop is bad !?
+
+in:in1
+informat:genbank
+
+arg:NAMETOP
+argtype:chooser
+arglabel:Names at top  ?
+argchoice:No:
+argchoice:Yes:-nametop
+
+arg:NAMELEFT
+argtype:chooser
+arglabel:Names at left ?
+argchoice:No:
+argchoice:Yes:-nameleft
+
+arg:NAMERIGHT
+argtype:chooser
+arglabel:Names at right?
+argchoice:Yes:-nameright
+argchoice:No:
+
+arg:NUMTOP
+argtype:chooser
+arglabel:Numbers at top  ?
+argchoice:Yes:-numtop
+argchoice:No:
+
+arg:NUMBOT
+argtype:chooser
+arglabel:Numbers at tail ?
+argchoice:No:
+argchoice:Yes:-numbot
+
+arg:NUMLEFT
+argtype:chooser
+arglabel:Numbers at left ?
+argchoice:Yes:-numleft
+argchoice:No:
+
+arg:NUMRIGHT
+argtype:chooser
+arglabel:Numbers at right?
+argchoice:Yes:-numright
+argchoice:No:
+
+arg:MATCH
+argtype:chooser
+arglabel:Use match '.' for 2..n species?
+argchoice:No:
+argchoice:Yes:-match
+
+arg:GAPC
+argtype:chooser
+arglabel:Count gap symbols?
+argchoice:No:
+argchoice:Yes:-gap
+
+arg:WIDTH
+argtype:slider
+arglabel:Sequence width?
+argmin:10
+argmax:200
+argvalue:50
+
+arg:COLS
+argtype:slider
+arglabel:Column spacers?
+argmin:0
+argmax:50
+argvalue:10
+
+
+### pretty print insert end
+#
+
+item:Wally's test function
+itemmethod:run__wally $ONE $TWO $THREE < $FILE
+
+arg:ONE
+argtype:chooser
+arglabel:How?
+argchoice:Fast:-fast
+argchoice:Slow:-slow
+
+arg:TWO
+argtype:slider
+argmin:0
+argmax:100
+argvalue:50
+arglabel:how many?
+
+arg:THREE
+argtype:choice_list
+arglabel:Which one?
+argchoice:Fast:-fast
+argchoice:Slow:-slow
+
+arg:FILE
+argtype:text
+arglabel:Which file
+

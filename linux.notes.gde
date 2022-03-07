@@ -1,0 +1,44 @@
+
+21 January 2001   Tulio de Oliveira  &     Rob Miller 
+                  tuliodna@yahoo.com, rob@inpharmatica.co.uk
+
+This is veresion 2.2 of GDE which I have attempted to port to 
+Linux (glibc, kernel 2.0.x, Debian release but no .deb file).
+
+the basic installation steps are as follows:
+
+(1) get the OpenWin XView libraries and include files set up on
+your system.  Binary versions of the libs are included in this 
+distribution, but they may not work on your system.  If they 
+will work, you should be able to copy them to /usr/local/lib,
+run ldconfig, and have the included executable GDE files work.
+Use "ldconfig -v | grep libxv" to see if it's really finding the
+shared library, else "man ldconfig" and sort it out.  It's 
+better if you get the xview stuff properly installed on your 
+system, but if you can't just grab the precompiled executables 
+from the various subdirectories -- i.e., skip step (2) below.
+
+Rpm version of OpenView (Xview) library are included in the distribution at
+the CORE directory.
+xview-3.2p1.4-6.i386.rpm , xview-3.2p1.4-6.src.rpm , xview-clients-3.2p1.4-6.i386.rpm , xview-devel-3.2p1.4-6.i386.rpm
+
+For Redhat system: rpm -i xview-xxxx.rpm
+
+(2) The linux distribution had been compiled and provide the executables files. Until today GDE for linux had been sucessfull setup in Debian, RedHat, Mandrake and FreeBSD Linux distributions.
+
+(3) copy all the executables to wherever you want GDE to live,
+and set the environment variable GDE_HELP_DIR to that location
+in your login/startup files.  Mine uses bash and in the 
+~/.bash_profile file I have 
+
+export GDE_HELP_DIR=/usr/local/GDE
+
+M. Zuker's RNA folding code requires that there be a 
+$GDE_HELP_DIR/ZUKER directory containing the ZUKER/*.dat
+files.  You will probably want to put the $GDE_HELP_DIR
+on your path if it is a new directory.
+
+That should be it.  I have gotten everythng to compile though
+still with a few warnings here and there that I couldn't figure
+out.  I think everything runs ok as well, though I'm not certain
+about how Zuker's MFOLD is exactly supposed to work.

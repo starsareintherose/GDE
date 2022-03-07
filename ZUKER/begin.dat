@@ -1,0 +1,21 @@
+MFOLD - Prediction of RNA secondary structure by free energy minimization. 
+      - Version 2.0 : suboptimal folding with temperature dependence
+      - Michael Zuker and John Jaeger 
+      - LRNA : folds linear RNA sequences
+      - CRNA : folds circular RNA sequences
+
+Any research that uses these programs should cite :
+
+   M. Zuker 
+   On Finding All Suboptimal Foldings of an RNA Molecule.
+   Science, 244, 48-52, (1989)
+
+   J. A. Jaeger, D. H. Turner and M. Zuker 
+   Improved Predictions of Secondary Structures for RNA.
+   Proc. Natl. Acad. Sci. USA, BIOCHEMISTRY, 86, 7706-7710, (1989)
+
+   J. A. Jaeger, D. H. Turner and M. Zuker 
+   Predicting Optimal and Suboptimal Secondary Structure for RNA.
+   in "Molecular Evolution: Computer Analysis of Protein and
+   Nucleic Acid Sequences", R. F. Doolittle ed.
+   Methods in Enzymology, 183, 281-306 (1989)

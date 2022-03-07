@@ -1,0 +1,301 @@
+                           Directory of files
+
+      Suboptimal RNA folding package - M. Zuker, J. A. Jaeger, D. H. Turner
+
+                             Version 2.0
+
+Makefile - Standard UNIX makefile for RNA folding programs.
+
+alu.ct - A concatenation of 15 ct files containing part of the output 
+         produced by executing lrna using bat2.com as input.
+         ( lrna  <bat2.com   ) These are 15 foldings of an ALU 
+         sequence. The first is optimal.
+
+alu.distance - The output of the 'distance' program using alu.ct as 
+               input. This file contains all the pairwise distances 
+               between 15 different foldings of an ALU sequence.
+
+alu.out - Structure output file (120 record length) containing part of the
+          output produced by running lrna using bat2.com as input. These 
+          are 15 foldings of an ALU sequence. The first is optimal.
+          Selected base pairs are marked by   |
+                                              ^ .
+
+alu.plot1 - This is an ASCII dot plot file created using
+            the plot option in the energy dot plot mode. The run is
+            a continuation using the alu.sav file. The energy
+            increment selected is 114 ( 11.4 kcal/mole ) which is
+            10% of the minimum computed free energy. 4 levels (or
+            colors) were selected. The first level is for optimal
+            base pairs. Levels 2, 3, and 4 correspond to energy
+            increments of 3.8, 7.6, and 11.4 kcal/mole respectively.
+
+alu.plot2 - Similar to alu.plot1. Only three levels (colors) are used 
+            up to a total energy increment of 7.6 kcal/mole ( 6.6% 
+            from minimum ).
+
+alu.reg - A concatenation of 15 region files containing part of the ouput 
+          produced by running lrna using bat2.com as input. These are 15
+          foldings of an ALU sequence. The first is optimal.
+
+alu.sav - The unformatted save file created by running lrna using
+          bat1.com as input ( lrna  <bat1.com ). This file can be 
+          used for a continuation run of lrna (as in : lrna <bat2.com).
+          This file is for the folding of an ALU sequence using
+          default energy files and no auxiliary information which would
+          either force or prohibit specific base pairs.
+
+alu.seq  - Sequence used in sample foldings. Note that A, C, G and U/T
+           are in uppercase letters. Bases that are in lowercase
+           letters will not be recognized by the program!
+
+alu.gcg - Output of figdot using alu.plot1 and alu.plot2 as input. The
+          title is not included in this file. The figure program in the
+          Genetics Computer Group package ( GCG ) can be used to transform 
+          this device independent plot file into a device specific plot 
+          file. The output is two energy dot plots for the folding of the 
+          ALU sequence ( produced from lrna using bat1.com & bat2.com ). 
+          You could also write your own program to create energy dot plots 
+          with labels and using multiple colors for different levels. 
+
+bat1.com - Sample input file for folding an ALU sequence. This 
+           input file is the output of the batgen program and produces
+           the save file alu1.sav.
+
+bat2.com - Sample input file for folding an ALU sequence. This
+           command file is used as input to the lrna program. The
+           save file, alu.sav, is read by lrna which then computes
+           optimal and suboptimal foldings of an ALU sequence. Up 
+           to 200 foldings are allowed, although only 15 are generated. 
+           All foldings must be within 10% of the minimum computed free 
+           energy and the distance between any pair must be greater than 5.
+
+batgen - Executable code for batgen.
+
+batgen.f - Source code for batgen. This program creates input files for
+           RNA folding.
+
+begin.dat - Author and reference information that are displayed 
+            before program execution.
+
+bpin.f - Source code for a subroutine used by distance. 
+
+bpin.o - Object file for bpin.
+
+bpsrch.f - Source code for a subroutine used by distance.
+
+bpsrch.o - Object file for bpin.
+
+cdot.o - Object file for dotplot. Similar to ldot.o. This file is
+         linked with others to create crna.
+
+circ.f - Source code for main; circular version of folding program.
+
+circ.inc - An include file for the circular version of the folding
+           program. Note (see Makefile) that it is copied
+           into a temporary file called rfd.inc (Rna FolDing).
+
+circ.o - Object file for rna.f for circular RNA folding.
+
+cmisc.o - Object file for mrna.f. This is similar to lmisc.o 
+          and is linked with others to create crna.
+
+crna - The circular verision of the RNA folding program (FORTRAN).
+
+crna.o - Object file for crna.
+
+csort.o - Object file for sort.f. Similar to lsort.o.
+
+cttobp - Executable file for cttobp.
+
+cttobp.f - Source code for a program that converts a ct file into
+             a region and a sequence file, and vice versa. 
+
+cttobp.o - Object file for cttobp.
+
+ct_gcg.f - This file contains an alternte for of the ct subroutine
+             in mrna.f . This alternate generates ct files that
+             can be read directly by GCG software.
+
+cvtct - Executable file for cvtct.
+
+cvtct.f - Source code for cvtct. This program converts a ct file into
+            a  .dat  file used by the University of Wisconsin package
+            for displaying RNA foldings (eg. SQUIGGLES accepts this
+            file format). Needs jjlib.o at link time.
+
+cvtct.o - Object file for cvtct.
+
+dangle.dat - Energy file for single base stacking (dangling ends) at 37 deg. 
+             Entries marked "." should be interpreted as plus infinity.
+             In such cases, no single base stacking occurs. Equivalent
+             to dangle.037 .
+
+dangle.dh - Enthalpy file for single base stacking (dangling ends). 
+            This file is used by the newtemp program together with the
+            dangle.dat file to produce energy files for folding at
+            arbitrary temperatures between 0 and 100 deg. Some single
+            base stacking energies may come out positive for high
+            temperatures. The program only includes single base
+            stacking if the energy increment is negative.
+            Entries marked "." should be interpreted as plus infinity.
+
+distance - Executable file for distance.
+
+distance.f - Source code for distance. This program reads in a ct file
+             containing between 2 and 15 structures and computes the
+             distance between the first and all the rest or else the
+             distance between all pairs.
+
+distance.o - Object file for distance.
+
+efn - Executable file for efn. 
+
+efn.f - An independent program to compute the energies of foldings
+          using a ct file as input. This program requires energy table
+          input. The output consists of the computed energy of each
+          folding found in the input ct file. Line printer output and/or
+          region table output are options.
+
+efn.inc  - Include file for efn. Needed when efn.f is compiled.
+
+errata2.list - List of errata found in version 2 folding programs  
+               with dates.
+
+figdot.doc - Documentation for figdot.
+
+figdot - Executable file for figdot.
+
+figdot.f - Source code for figdot. This program takes an ASCII plot
+           file (produced by crna or lrna using the plot option
+             in dotplt and converts it into a device inependent plot
+             file for use by the FIGURE program from the Genetics
+             Computer Group (GCG) package. The net result is to create 
+             an energy dot plot.
+
+files.list - This file.
+
+formid.f - Source code for formid. This subroutine reads and interprets
+           sequence data.
+
+formid.o - Object file for formid. Linked to create both the linear and
+           circular versions of the folding programs.
+
+getseq.f - Almost the same as formid.f. Used with batgen.
+
+getseq.o - Object file for getseq.
+
+jjlib.f - Some subroutines by John Jaeger that are needed by cvtct.
+
+jjlib.o - Object file for jjlib. Needed by cvtct at link time.
+
+lin.f - Source code for main; linear version of the folding program.
+
+lin.inc - An include file for the linear version of the folding
+          program. Note (see Makefile) that it is copied
+          into a temporary file called rfd.inc (Rna FolDing).
+
+lin.o - Object file for lin.
+
+lmisc.o - Object file for mrna.f. This is similar to cmisc.o and
+          is linked with other files to create lrna.
+
+loop.dat - Energy data for hairpin, bulge and interior loops at 37 deg.
+           Equivalent to loop.037
+
+lrna - Executable file for the linear version of the folding program.
+
+lrna.o - Object file for lrna.
+
+lsort.o - Object file for sort.f. Similar to csort.o.
+
+mfold.doc - A glossary of subroutines and functions used in the folding
+            programs as well as a list of some of the varibles.
+
+mfold.flow - A flow chart for the main routine of the folding programs.
+
+mfold.user - A user's manual. Another description will appear :
+             Predicting Optimal and Suboptimal Secondary Structure for RNA
+             by J. A. Jaeger, D. H. Turner and M. Zuker, in
+             "Molecular Evolution: Computer Analysis of Protein and 
+             Nucleic Acid Sequences", R. F. Doolittle ed.
+             Methods in Enzymology, 183, 281-306, (1990).
+
+miscloop.dat - Miscellaneous loop file at 37 deg. Contains :
+               i. a paramater for extrapolating bulge, interior and
+                  hairpin loop size beyond 30.
+              ii. parameters for the Ninio "asymmetric interior loop"
+                  correction.
+             iii. parameters used in computing the destabilizing effect
+                  of multi-branched loops.
+
+mrna.f - Miscellaneous subroutines for both the linear and circular
+         versions of the folding program.
+
+multid.f - This subroutine reads and interprets sequence data. It
+           differs from formid in that it automatically returns
+           one sequence after another to the calling routine instead
+           of requesting a sequence number of identifier. 
+
+multid.o - Object file for multid. Linked to create both the linear and
+             circular versions of the folding programs.
+
+newtemp - Executable file for newtemp.
+
+newtemp.f - Source code for newtemp. This program reads the 37 deg.
+            energy files :
+            stack.dat, tstack.dat, loop.dat, dangle.dat, tloop.dat
+            & miscloop.dat
+            as well as the enthalpy files :
+            stack.dh, tstack.dh, dangle.dh & tloop.dh 
+            and computes new energy files for folding at any
+            user defined temperature between 0 and 100 degrees.
+            The output files are labelled with the appropriate
+            temperature. For example, if 25 deg. is selected, the
+            output energy files will be named :
+            stack.025, tstack.025, loop.025, dangle.025, tloop.025
+            & miscloop.025
+
+newtemp.o - Object file for newtemp.
+
+README - To be read first.
+
+rfd.inc - A temporary copy of either circ.inc or lin.inc.
+
+rna.f - FORTRAN source code (main)for RNA folding.
+
+sort.f - Source code for the sorting subroutines.
+
+stack.dat - Energy file for base pair stacking within helices at 37 deg.
+            Entries marked "." should be interpreted as plus infinity.
+            Equivalent to stack.037 .
+
+stack.dh - Enthalpy file for base pair stacking. This file
+           is used by the newtemp program together with the stack.dat
+           file to produce energy files for folding at arbitrary
+           temperatures between 0 and 100 deg. Entries marked "."
+           should be interpreted as plus infinity. 
+
+tloop.dat - A list of distiguished tetraloops and the bonus energies
+            given to them at 37 deg. These bonus energies are included 
+            in the final folding energies.
+            Equivalent to tloop.037
+
+tloop.dh - Enthalpy file for distinguished tetraloops. This file
+           is used by the newtemp program together with the tloop.dat
+           file to produce bonus energies for listed tetraloops.
+
+tstack.dat - Energy file for terminal mismatched pairs in hairpin and
+             interior loops at 37 deg. Entries marked "." should be 
+             interpreted as plus infinity. Equivalent to tstack.037 .
+
+tstack.dh - Enthalpy file for terminal mismatched pairs in hairpin and
+            interior loops. This file is used by the
+            newtemp program together with the tstack.dat file to
+            produce energy files for folding at arbitrary
+            temperatures between 0 and 100 deg. Entries marked "."
+            should be interpreted as plus infinity. 
+
+zsh - Zuker's shell : If you issue the command  zsh 'name', a window
+      will pop open called 'name' and the program 'name' will be
+      run in that window. e.g. -- zsh lrna

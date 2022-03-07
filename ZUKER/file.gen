@@ -1,0 +1,13 @@
+HELIX
+Sequence
+ZZZZZZZZZZ
+LOCUS      HELIX        TEXT	76 BP
+ORIGIN
+        1 [[[[[[[[-- -----[[[[[ [[[[[----[ [[[------- ----]]]]-- --]]]]--]]
+       61 ]]]]]]]]]] ]]----
+//
+LOCUS      Sequence     RNA	76 BP
+ORIGIN
+        1 GCCGAAAUAG CUCAGUUGGG AGAGCGUUAG ACUGAAGAUC UAAAGGUCCC UGGUUCGAUC
+       61 CCGGGUUUCG GCACCA
+//

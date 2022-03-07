@@ -1,0 +1,32 @@
+item:MFOLD
+itemmethod:shelltool (tr 'a-z' 'A-Z' < seqGB > .GDE.tmp.caps; ZUKERGDE.sh .GDE.tmp.caps $CT $GDE_HELP_DIR/ZUKER/ > out1 && $METHOD < out1; Zuk_to_gen < $CT >file.gen; gde file.gen& textedit RegionTable; /bin/rm -f RegionTable out1 seqGB* .GDE.tmp.caps)&itemhelp:MFOLD.help
+ 
+in:seqGB 
+informat:genbank
+insave:
+
+arg:METHOD
+argtype:chooser
+arglabel:RNA type
+argchoice:Fold Linear RNA:lrna
+argchoice:Fold Circular RNA:crna
+ 
+arg:CT   
+argtype:text
+arglabel:ct File Name
+argtext:ctFile
+ 
+item:Draw Secondary structure
+itemmethod:(LoopTool $TEMPLATE in1 ; /bin/rm -f in1) &
+itemhelp:LoopTool.help
+ 
+arg:TEMPLATE
+argtype:chooser
+arglabel:Use template file ./loop.temp?
+argchoice:No:
+argchoice:Yes:-t loop.temp
+ 
+in:in1   
+informat:genbank
+insave:
+

@@ -1,0 +1,338 @@
+    Glossary of subroutines, functions and some of the variables
+                used by the RNA folding programs
+
+Global variables: {implicit integer}
+
+  (data defined)
+
+  infinity - large positive integer used to indicate impossible basepairs
+  fldmax   - largest value of 2*n
+  sortmax  - largest size of heap in sort module ( + 1)
+  mxbits   - largest size of marks and force2
+  maxn     - size of largest processed fragment that can be folded
+  fldmax   - twice maxn - the program actally folds a doubled up fragment
+             subject to certain constraints
+  maxtloops- the maximum number of distinguished tetra-loops that can be used
+                                                                                
+  (dynamic valued)
+
+  basepr(maxn)
+      Output array for traceback.
+
+  bulge(30)
+      Table of bulge loop energies.
+
+  cntrl(10)
+      Control Parameters:
+          (1)   run type 
+                  0  normal
+                  1  save
+                  2  continuation
+          (2)   output type
+                  1  lineout
+                  2  ct file
+                  3  region table
+                  4  lineout + ct file
+                  5  lineout + region table
+                  6  ct file + region table
+                  7  lineout + ct file + region table
+          (3)   lineout record length
+          (4)   lineout unit number
+          (5)   depending on run mode
+                run mode = 0
+                  not used (this is terminal type in VAX/VMS version)
+                run mode = 1
+                  not used
+                run mode = 2
+                  number of sequences to be folded
+          (6)   depending on run mode
+                  run mode = 0
+                     minimum vector size for dotplt
+                  run mode = 1 or 2
+                     maximum number of tracebacks
+          (7)   run mode
+                  0  sub-optimal plot
+                  1  n-best
+                  2  multiple foldings
+          (8)   percentage for sort
+          (9)   window for dotplt and sortout routines
+         (10)   reserved for future expansion
+
+  dangle(5,5,5,2)
+      Table of dangling end energies.
+
+  eparam(10)
+      Energy Parameters:
+          (1)   Extra stack energy                        
+          (2)   Extra bulge energy                        
+          (3)   Extra loop energy (interior)              
+          (4)   Extra loop energy (hairpin)               
+          (5)   Extra loop energy (multi)                 
+          (6)   Multi loop energy/single-stranded base
+          (7)   Maximum size of interior loop             
+          (8)   Maximum lopsidedness of an interior loop  
+          (9)   Bonus Energy used to force base pairs
+         (10)   Multi loop energy/closing base-pair
+
+  force(2 * maxn)
+      Single force array.
+
+  force2(maxbits) {int*2}
+      Double force array. Accessed through fce and sfce. (bit addressing)
+
+  hairpin(30)
+      Table of hairpin loop energies.
+
+  hstnum(2 * maxn)
+      Array used for conversion of new to old numbering of sequence fragment.
+
+  i
+      Mainly used to designate the 5' end of a segment.
+
+  ip
+      i' - used mainly to designate the 3' end of a segment beginning
+           with i  ( i' > i ).
+
+  inter(30)
+      Table of interior loop energies.
+
+  j
+      Mainly used to designate the 3' end of a segment.
+
+  jp
+      j' - used mainly to designate the 5' end of a segment beginning
+           with j  ( j' < j ).
+
+  list(100,4)
+      List of options selected in MENU. Up to 100 can be selected.
+
+  listsz
+      The number of options selected from the MENU.
+
+  maxn
+      Maximum size of a fragment which can be folded.
+
+  marks(maxbits) {int*2}
+      Pair marking array for preventing identical tracebacks.
+      Accessed through mark and smark. A base pair i.j is mapped
+      into a single bit of this array. Any base pair which occurs
+      in a structure which is computed is "set" from 0 to 1. In
+      addition, base pairs close to these base pairs (within a
+      distance of 'window') are also "set". Base pairs which are 
+      "set" will not be chosen for computing new foldings.
+
+  n
+      The size of the fragment to be folded after processing. The
+      fragment is doubled in size for computational purposes.
+
+  newnum(5000)
+      newnum(i) is the numbering of the Ith element in the original
+      sequence in the fragment to be folded. If the ith element is
+      not in the chosen fragment, then newnum(i) = 0.
+
+  nsave(2)
+      5' and 3' ends of the fragment to be folded (historical numbering).
+
+  numseq(2 * maxn)
+      Holds sequence converted from characters to integers.
+
+  seq(5000) {char}
+      original sequence returned from formid.
+
+  seqlab {char*30}
+      Sequence label.
+
+  stack(5,5,5,5)
+      Table of stacking energies.
+
+  tstk(5,5,5,5) 
+      Table of terminal stacking energies.
+
+  vst(maxn squared) {int*2}
+      Energy array v(i,j) is stored as vst((n-1)*(i-1)+j).  v(i,j) is
+      the minimum folding energy of the segment closed by the base 
+      pair i.j.
+
+  work(2 * maxn,0:2)
+      Holds columns of wst to minimize paging during multi-loop
+      searchs.  In the linear version there is work1(2*maxn,0:2) 
+      and work2(2*maxn).
+
+  wst(maxn squrard) {int*2}
+      Energy array mapped as vst is. In the linear version this
+      array is split into wst1(maxn sq) and wst2(maxn sq).  The
+      energy array W(i,j) is stored as WST((n-1)*(i-1)+j).  W(i,j) is
+      the minimum folding energy of the segment from i to j. 
+      wst1 penalizes all exterior single-stranded bases and base
+      pairs as if they were in an interior loop. wst2 does not do this.
+
+
+Routines:
+
+  build_heap(err)
+      Reads in all the v energies within a user-specified percentage
+      (up to an upper limit built into the program) and sorts them
+      into inverse partial order (a heap with the lowest value at the 
+      top).
+      var heap(sortmax) : heap array 
+          
+  convt(str)
+      Returns the value of the integer held in the character string
+      str.
+
+  ct(r)
+      Puts the results of trace into a ct file.
+
+  device
+      Gets run information from user.
+
+  digit(row,column,pos,bmax,b)
+      Adds the sequence numbers to the linout result.
+
+  dotplt(iret,jret,jump)@@@
+      Sub-optimal plot option.
+
+  ene(i,j)
+      Returns v(i,j) + v(j,i+n).
+
+  enefiles
+      Reads in the appropriate energy file names.
+
+  erg(mode,i,j,ip,jp)
+      Returns the value from the energy tables indicated by the
+      parameter values.
+      var e(4) : (linear only) array for minimum energies  
+  
+  ergread
+      Reads in the appropriate energy rules from a file.
+
+  errmsg(err,i,j)
+      Prints error message number (err) and stops if appropriate.
+      i and j are numbers passed to be included in some error
+      messages.
+
+  fill
+      Uses the energy function (erg) to fill the matrices v and w
+      (or w1 and w2) with the folding energies.  The matrices are
+      accessed by the rest of the program by either the functions
+      v(i,j) and w(i,j) {or w1,w2}, or by vst(k) and wst(k) {wst1,
+      wst2} where k = (n-1)*(i-1)+j.    
+      var inc(5,5) : base pair possibilities - 1,2,3,4,5 correspond
+      to A,C,G,U and X (other) respectively. inc(i,j) = 1 if and only
+      if base types i and j can form a base pair. Thus the program 
+      allows one to define G.G as a base pair if desired.
+
+  find(unit,len,str)
+      Searches the file under unit number unit until it finds the
+      string str (of length len).
+
+  fce(ii,ji)
+      Returns .true. if sfce has been called on (i,j), .false. otherwise.
+      This is how information on forced base pairs is used.
+
+  formid(seqid,seq,nseq,nmax,used)
+      Standard routine for reading in sequences.
+
+  getcont
+      Reads a save file.
+
+  heap_sort
+      Sorts the results of build_heap into linear order.
+      var sort(sortmax) : the heap is sorted into this array 
+
+  initst
+      Initializes the program stack.  The stack is
+      four integers wide and up to 50 levels deep.
+      The stack is used to keep track of outstanding
+      fragments during the traceback.
+
+  linout(n1,n2,energy,iret,jret,error)
+      Puts the results of trace into line printer format. 
+
+  listout
+      Prints the options selected already by the user.  Called from
+      menu.
+
+  mark(i,j)
+      Returns .true. if smark has been called on (i,j), .false. otherwise.
+      Used to determine which base pairs have occurred in structures 
+      already computed or are close to such base pairs.
+
+  menu
+      Gets run options required by user.
+
+  mseq(i)
+      On first call, opens a sequence file and returns the number of
+      sequences as i. On subsequent calls, reads in sequence number i 
+      using multid.
+
+  multid(seqid,seq,nseq,nmax,used,rnum)
+      Modified formid for use with multiple folding.
+
+  out
+      Debug routine, not used during normal program execution.
+      Will print out the energy tables in a semi-readable format.
+
+  outputs
+      Gets output options desired by user (enables some or all of 
+      lineout, region table, ct file). 
+
+  process
+      Converts the initial rna data into forms useable by the 
+      program.
+
+  pull(a,b,c,d)
+      Pulls the four parameters off the stack. Returns 0 if the 
+      stack was not empty.
+
+  push(a,b,c,d)
+      Pushes the four parameters onto the stack. 
+
+  putcont
+      Saves the program information into a "save file" after fill
+      is called.
+
+  regtab
+      Puts the results of trace into a region table.
+
+  sfce(ii,ji)
+      Sets a mark on a point i,j so that the program will include
+      it in any folding by giving this base pair a bonus energy of
+      eparam(9).
+
+  smark(i,j)
+      Sets a mark on a point (base pair) i.j so that the program 
+      knows the point has been included in an already computed
+      structure or is "close" to such a point.
+
+  sortout(i,j,rep,err)
+      Used for "N Best" run.  On the first pass this routine will
+      call build_heap and heap_sort, and return the (i,j) pair
+      with the lowest energy.  From then on the routine will return
+      the (i,j) pair with the lowest energy that hasn't been marked
+      by smark.
+
+  stest(stack,sname)
+      Tests the stack tables for symmetry, used after ergread.
+
+  swap(i,j)
+      Puts (i = j) and (j = i)
+
+  trace(ii,ji,nforce,error)  
+      Computes the best folding containing the basepair ii.ji.
+      The output is put into the basepr(k) array. If basepr(k) = 0,
+      then k is single-stranded. If basepr(k) = k' > 0, then k
+      pairs with k'.
+
+  vector (i,j,vopt,vinc,ina) {dotplt module}
+      Prints out all the stacking regions within vinc energy of vopt
+      along the diagonal starting with the point (i,j) {along axis,
+      top right corner is origin}
+
+  v(i,j)
+      Returns the v-energy value of (i,j) mapped into vst.
+
+  w(i,j)
+      Returns the w-energy value of (i,j) mapped into wst. In the
+      linear version of the program, this routine is split into
+      w1(i,j) and w2(i,j) which map into wst1 and wst2.

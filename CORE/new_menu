@@ -1,0 +1,259 @@
+Blastn (Nucleic Acid)
+itemmethod:(echo PROGRAM blastn > in1.tmp; echo DATALIB $DBASE >> in1.tmp; echo HISTOGRAM $PLOT >> in1.tmp; echo ALIGNMENTS $SCORE >> in1.tmp; echo SPLIT 100000 >> in1.tmp; echo BEGIN >> in1.tmp; readseq -i1 -p -f8 in1 >> in1.tmp; cat in1.tmp | /bin/mail blast@ncbi.nlm.nih.gov; rm in1 in1.tmp) &
+
+arg:DBASE
+argtype:choice_menu
+arglabel:Which Database?
+argchoice:Non-redundant database:nr
+argchoice:GenBank DNA sequence database:genbank
+argchoice:GenBank update (cumulative daily updates):gbupdate
+argchoice:EMBL DNA sequence database:embl
+argchoice:EMBL update (cumulative weekly updates):emblu
+argchoice:Vector subset of GenBank:vector
+argchoice:Database of Expressed Sequence Tags (ESTs):dbest
+argchoice:Eukaryotic promoterdatabase:epd 
+argchoice:Kabat's database of immunological interest:kabatnuc
+
+arg:PLOT
+argtype:chooser
+arglabel:Display Histogram?
+argvalue:1
+argchoice:Yes:yes
+argchoice:No:no
+
+arg:SCORE
+argtype:slider
+arglabel:Number of High Scoring Pairs Displayed?
+argmin:1
+argmax:250
+argvalue:5
+
+in:in1
+informat:genbank
+insave:
+
+item:Blastp (Protein)
+itemmethod:(echo PROGRAM blastp >in1.tmp; echo DATALIB $DBASE >> in1.tmp; echo HISTOGRAM $PLOT >> in1.tmp; echo ALIGNMENTS $SCORE >> in1.tmp; echo MATRIX $MATRX >> in1.tmp; echo SPLIT 100000 >> in1.tmp; echo BEGIN >> in1.tmp; readseq -i1 -p -f8 in1 >> in1.tmp; cat in1.tmp | /bin/mail blast@ncbi.nlm.nih.gov; rm in1 in1.tmp) &
+
+arg:DBASE
+argtype:choice_menu
+arglabel:Which Database?
+argchoice:Non-redundant protein database:nr
+argchoice:Swiss-Prot protein database:swissprot
+argchoice:PIR protein database:pir
+argchoice:Cumulative update to Swiss-Prot major release:spupdate
+argchoice:GenPept (translated GenBank):genpept
+argchoice:GenPept update (cumulative daily updates):gpupdate
+argchoice:Brookhaven PDB:pdb
+argchoice:Kabat's database of immunological interest:kabatnuc
+argchoice:Transcription Factors Database:tfd
+argchoice:6-frame translations of human Alu repeats:palu
+
+arg:PLOT
+argtype:chooser
+arglabel:Display Histogram?
+argvalue:1
+argchoice:Yes:yes
+argchoice:No:no
+
+arg:SCORE
+argtype:slider
+arglabel:Number of High Scoring Pairs Displayed
+argmin:1
+argmax:250
+argvalue:5
+
+arg:Matrx
+argtype:chooser
+arglabel:Weighting matrix
+argchoice:PAM 250:PAM250
+argchoice:PAM 120:PAM10
+argchoice:PAM 40:PAM40
+argchoice:BLOSUM62:BLOSUM62
+
+
+in:in1
+informat:genbank
+insave:
+
+item:Fasta (Nucleic Acid)
+itemmethod:(echo LIB $DBASE > in1.tmp; echo WORD $KPL >> in1.tmp; echo LIST $TOP >> in1.tmp; echo ALIGN $ALNG >> in1.tmp; echo ONE >> in1.tmp; echo SEQ >> in1.tmp; sed "s/-//g" < in1 | tr '@%#' '>' >> in1.tmp;Mail FASTA@EMBL-Heidelberg.de < in1.tmp; rm in1 in1.tmp) &
+
+arg:DBASE
+argtype:choice_menu
+arglabel:Which Database?
+argchoice:GenBank Qrtly & Updates:GBALL
+argchoice:GenBank Updates:GBNEW
+argchoice:Entries only in GenBank, not in EMBL:GBONLY
+argchoice:GenBank and EMBL entries (latest releases):GENEMBL
+argchoice:New EMBL entries (Since latest release):EMNEW
+argchoice:All EMBL entries (latest release + new ones):EMALL
+argchoice:EMBL fungi division only:EFUN
+argchoice:EMBL invertebrates division only:EINV
+argchoice:EMBL mammals division only:EMAM
+argchoice:EMBL organelles division only:EORG
+argchoice:EMBL phages division only:EPHG
+argchoice:EMBL plants division only:EPLN
+argchoice:EMBL primates division only:EPRI
+argchoice:EMBL prokaryotes division only:EPRO
+argchoice:EMBL rodents division only:EROD
+argchoice:EMBL synthetic sequences division only:ESYN
+argchoice:EMBL unannotated division only:EUNA
+argchoice:EMBL viruses division only:EVRL
+argchoice:EMBL vertebrates division only:EVRT
+
+
+
+arg:KPL
+argtype:slider
+arglabel:K-tuple window
+argmin:3
+argmax:6
+argvalue:4
+
+arg:TOP
+argtype:slider
+arglabel:Scores Displayed?
+argmin:1
+argmax:200
+argvalue:100
+
+arg:ALNG
+argtype:slider
+arglabel:# Alignments Displayed?
+argmin:1
+argmax:200
+argvalue:20
+
+in:in1
+informat:flat
+insave:
+
+item:Fasta (Protein)
+itemmethod:(echo LIB $DBASE > in1.tmp; echo WORD $TPL >> in1.tmp; echo LIST $SCRS >> in1.tmp; echo ALIGN $ALNMNTS >> in1.tmp; echo PROT >> in1.tmp; echo SEQ >> in1.tmp; sed "s/-//g" < in1 | tr '@%#$' '>' >> in1.tmp; Mail FASTA@EMBL-Heidelberg.de < in1.tmp; rm in1 in1.tmp) &
+
+arg:DBASE
+argtype:choice_menu
+arglabel:Which Protein Database?
+argchoice:Swiss-Protein (latest release + new ones):SWALL 
+argchoice:Swiss-Protein (since latest release):SWNEW
+argchoice:Swiss-Protein (latest release):SW
+argchoice:NBRF/PIR (latest release):NBRF
+argchoice:NBRF/PIR (not Swiss-Prot):PIRONLY
+argchoice:All Swiss-Prot and NBRF/PIR entries:SWISSPIRALL
+argchoice:PDB structure entries:BROOKHAVEN
+argchoice:PDB structure entries (NBRF version):NRL
+
+arg:TPL
+argtype:slider
+arglabel:K-TUP window
+argmin:1
+argmax:2
+argvalue:1
+
+arg:SCRS
+argtype:slider
+arglabel:# Scores Displayed?
+argmin:1
+argmax:200
+argvalue:100
+
+arg:ALNMNTS
+argtype:slider
+arglabel:# Alignments Displayed?
+argmin:1
+argmax:200
+argvalue:20
+
+in:in1
+informat:flat
+insave:
+
+item:GeneID
+itemmethod:($REPRINT > in1.tmp; echo Genomic Sequence >> in1.tmp; sed "s/-//g" < in1 | tr '@%#' '>' >> in1.tmp; Mail geneid@darwin.bu.edu < in1.tmp; rm in1 in1.tmp) &
+
+arg:REPRINT
+argtype:chooser
+arglabel:Do you want a GENEID reprint?
+argchoice:YES:echo "Preprint Request" >> in1.tmp
+argchoice:NO
+
+in:in1
+informat:flat
+insave:
+
+
+
+
+
+item:Sequence Retrieval
+itemmethod:(echo DATALIB $DBASE>> in1.tmp; echo MAXDOCS $NDOC >> in1.tmp;echo MAXLINES 100000 >> in1.tmp; echo BEGIN >> in1.tmp; echo $REGEXP >> in1.tmp; Mail retrieve@ncbi.nlm.nih.gov < in1.tmp; rm in1.tmp) &
+
+arg:DBASE
+argtype:choice_menu
+arglabel:Which Database?
+argchoice:GenBank DNA sequence database:genbank
+argchoice:GenBank update (cumulative daily updates):gbupdate
+argchoice:EMBL DNA sequence database:embl
+argchoice:EMBL update (cumulative weekly updates):emblu
+argchoice:Vector subset of GenBank:vector
+argchoice:Database of Expressed Sequence Tags (ESTs):dbest 
+argchoice:Swiss-Prot protein database:swissprot
+argchoice:PIR protein database:pir
+argchoice:GenPept (translated GenBank):genpept
+argchoice:GenPept update (cumulative daily updates):gpupdate
+argchoice:Transcription Factors Database:tfd
+
+arg:NDOC
+argtype:slider
+arglabel:Number of Sequences Retrieved?
+argmin:1
+argmax:100
+argvalue:20
+
+
+arg:REGEXP
+argtype:text
+arglabel:key words, sequence IDs, boolean connectors
+
+item:Grail
+itemmethod:(echo Sequences $TOTALSEQS $ID > in1.tmp; sed "s/-//g" < in1 | tr '@%#' '>' >> in1.tmp; Mail grail@ornl.gov <in1.tmp; rm in1 in1.tmp) &
+
+arg:REGISTER
+argtype:chooser
+arglabel:Have you previously registered for Grail services?
+argchoice:YES
+argchoice:NO:echo "YOU MUST REGISTER"
+
+arg:TOTALSEQS
+argtype:text
+arglabel:Number of Sequences Being Sent to Grail?
+
+arg:ID
+argtype:text
+arglabel:User ID (MUST HAVE PREVIOUSLY REGISTERED)
+
+in:in1
+informat:flat
+insave:
+
+item:Grail Registration
+itemmethod:(echo Register > in1.tmp; echo $NAME >> in1.tmp; echo $ADDRESS >> in1.tmp; echo $PHONE >> in1.tmp; echo $EMAIL >> in1.tmp; Mail grail@ornl.gov < in1.tmp; rm in1.tmp)
+
+arg:NAME
+argtype:text
+arglabel:Your Name
+
+arg:ADDRESS
+argtype:text
+arglabel:Your Address
+
+arg:PHONE
+argtype:text
+arglabel:Your Phone Number
+
+arg:EMAIL
+argtype:text
+arglabel:Your E-Mail Address
+
+
