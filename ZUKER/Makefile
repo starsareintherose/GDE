@@ -6,7 +6,7 @@
 
 #CFLAGS = -e -Bstatic 
 CFLAGS = -g
-FC = g77
+FC = gfortran
 
 all: lrna crna
 
