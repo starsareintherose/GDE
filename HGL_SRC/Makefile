@@ -1,10 +1,10 @@
 
 CC = cc
-#FLAGS = -g
-OPENWINHOME = /usr/openwin
+FLAGS = -m32
+OPENWINHOME = ../usr
 MFILE = 
-INCDIR = -I$(OPENWINHOME)/include
-LIBDIR = -L$(OPENWINHOME)/lib
+INCDIR = -I/usr/include/xview
+LIBDIR = -L/usr/lib32
 LIBS = -lxview -lolgx -lX11 
 
 libs.o = Alloc.o HGLfuncs.o

@@ -6,7 +6,7 @@ DrawNA.c Free.c BuiltIn.c Edit.c Genbank.c Scroll.c ChooseFile.c \
 CutCopyPaste.c HGLfile.c
 
 LIBS= -lm -lxview -lolgx -lX11
-CFLAGS= -g -L/usr/openwin/lib -I/usr/openwin/include
+CFLAGS= -g -m32 -L/usr/lib32 -I/usr/include/xview
 CC = cc
 #	Possible defines, SUN4 SGI DEC HGL
 DEFINES =  -DLINUX

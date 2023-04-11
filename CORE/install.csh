@@ -1,2 +1,0 @@
-make
-cp gde ../bin
