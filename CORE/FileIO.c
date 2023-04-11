@@ -182,10 +182,10 @@ char* block;
 	       FileIO.c: In function `Cfree':
 	       FileIO.c:181: void value not ignored as it ought to be
 
-		if(cfree(block) == 0)
+		if(free(block) == 0)
 			Warning("Error in Cfree...");
 			*/
-	    cfree(block);
+	    free(block);
 	}
 	else
 		Warning("Error in Cfree, NULL block");

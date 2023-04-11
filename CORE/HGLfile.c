@@ -751,7 +751,7 @@ NA_Alignment *aln;
 		if (this->description[0])
 			strcpy(that->description, this->description);
 		if (this->sequence) {
-			cfree(that->sequence);
+			free(that->sequence);
 			that->sequence = this->sequence;
 			that->seqlen = this->seqlen;
 			that->seqmaxlen = this->seqmaxlen;
@@ -783,7 +783,7 @@ NA_Alignment *aln;
 				that->comments_maxlen);
 		}
 		if (this->cmask) {
-			cfree(that->cmask);
+			free(that->cmask);
 			that->cmask = this->cmask;
 		}
 		if (this->offset != that->offset) that->offset = this->offset;

@@ -426,7 +426,7 @@ SetNADData()
 Fills in the display data structure for an initial monochrome display.
 All settings are simple defaults, and will need to be modified externally
 if otherwise.  This routine passes back a new NA_DisplayData structure, which
-can be destroyed after use with a call to cfree().
+can be destroyed after use with a call to free().
 
 Copyright (c) 1989-1990, University of Illinois board of trustees.  All
 rights reserved.  Written by Steven Smith at the Center for Prokaryote Genome

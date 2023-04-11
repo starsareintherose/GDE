@@ -342,7 +342,7 @@ Notify_arg arg;
 
 			repeat_cnt = 0;
 			SetNACursor(ddata,EditCan,win,xwin,dpy,gc);
-			cfree(buf);
+			free(buf);
 		}
 		/*
 *	Check mode

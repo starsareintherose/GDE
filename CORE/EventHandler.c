@@ -410,7 +410,7 @@ DO()
 	xv_set(pframe,FRAME_BUSY,TRUE,0);
 	xv_set(frame,FRAME_BUSY,TRUE,0);
 	system(Action);
-	cfree(Action);
+	free(Action);
 	xv_set(pframe,FRAME_BUSY,FALSE,0);
 	xv_set(frame,FRAME_BUSY,FALSE,0);
 	BlockInput = FALSE;
@@ -503,7 +503,7 @@ GfileFormat file;
 		strncat(temp,Action,i);
 		strncat(temp,method,strlen(method));
 		strcat( temp,&(Action[i+strlen(symbol)]) );
-		cfree(Action);
+		free(Action);
 		Action = temp;
 	}
 	return(Action);
@@ -592,7 +592,7 @@ GmenuItemArg arg;
 			strncat(temp,Action,i-1);
 			strncat(temp,textvalue,strlen(textvalue));
 			strcat( temp,&(Action[i+strlen(symbol)]) );
-			cfree(Action);
+			free(Action);
 			Action = temp;
 		}
 		else
@@ -605,7 +605,7 @@ GmenuItemArg arg;
 			strncat(temp,Action,i);
 			strncat(temp,method,strlen(method));
 			strcat( temp,&(Action[i+strlen(symbol)]) );
-			cfree(Action);
+			free(Action);
 			Action = temp;
 		}
 	}
