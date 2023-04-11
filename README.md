@@ -1,8 +1,10 @@
 # Genetic Data Environment
 
-GDE is originally distributed under SunOS in the 1990s by [Eisen](https://doi.org/10.1385/0-89603-358-9:13).
+GDE is originally distributed on SunOS in the 1990s by [Smith et al. (1994)](https://doi.org/10.1093/bioinformatics/10.6.671). With efforts from [Oliveira et al. (2003)](http://dx.doi.org/10.1093/bioinformatics/19.1.153), GDE started to work on Linux.
 
-This software is fixed from [Oliveira et al. (2003)](http://dx.doi.org/10.1093/bioinformatics/19.1.153) and re-distributed here.
+This software is partly from the source code fixed by Oliveria et al. (2003) and partly from the original source code of GDE working on SunOS. Both parts are fixed again to make sure that the source code can be complied pass by GCC 12.
+
+GDE now is again re-distributed here after GDE (SunOS) was offline for 25 years and GDE (Linux) was offline for 16 years.
 
 # Usage
 
