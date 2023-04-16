@@ -74,7 +74,7 @@ char **argv;
 	 */
 
 	frame = xv_create((int)NULL, FRAME, FRAME_NO_CONFIRM, FALSE,
-			  FRAME_LABEL, "Genetic Data Environment 2.2",
+			  FRAME_LABEL, "Genetic Data Environment 2.2.1",
 			  FRAME_INHERIT_COLORS, TRUE, XV_WIDTH, 700, XV_HEIGHT,
 			  500, FRAME_SHOW_FOOTER, TRUE, 0);
 

@@ -11,8 +11,18 @@ This software is partly from the source code fixed by Oliveria et al. (2003) and
 
 GDE now is again re-distributed here after GDE (SunOS) was offline for 25 years and GDE (Linux) was offline for 16 years.
 
+
 # Usage
 
 Though the dependency of GDE, xview, is orphaned by quite a lot of distributions, I still fix the software to give an outlook of how biologists worked during the last centenary.
 
 To use it, you must install xview lib and include. xview hardly work well on x86_64 architecture.
+
+The easist way is to install it from BioArchLinux
+
+
+# Maintaince
+
+I plan to maintain this Linux version GDE for updating the items update to the current Linux system. The 2.2.1 version fixes the basic function. Further, the aims of development would be to cooperate with modern phylogenetic-related software and fixed the broken LoopTool.
+
+If someone can help migrate it to x86_64 architecture, I would be very thankful.

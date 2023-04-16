@@ -61,7 +61,7 @@ LoadData(filename) char *filename;
 		}
 	}
 	fclose(file);
-	sprintf(temp, "Genetic Data Environment 2.2");
+	sprintf(temp, "Genetic Data Environment 2.2.1");
 	xv_set(frame, FRAME_LABEL, temp, 0);
 	return;
 }
