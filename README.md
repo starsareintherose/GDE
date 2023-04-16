@@ -1,3 +1,8 @@
+
+<div  align="center">
+<img src="./LinuxGDE.svg" width = "300" alt="logo" align=center />
+</div>
+
 # Genetic Data Environment
 
 GDE is originally distributed on SunOS in the 1990s by [Smith et al. (1994)](https://doi.org/10.1093/bioinformatics/10.6.671). With efforts from [Oliveira et al. (2003)](http://dx.doi.org/10.1093/bioinformatics/19.1.153), GDE started to work on Linux.

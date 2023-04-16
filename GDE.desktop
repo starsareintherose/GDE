@@ -1,0 +1,8 @@
+[Desktop Entry]
+X-Desktop-File-Install-Version=0.26
+Name=xdap
+Comment=Xorg DAP
+Icon=/usr/share/icons/Gde.svg
+Categories=Science
+Exec=gde %f
+Type=Application
