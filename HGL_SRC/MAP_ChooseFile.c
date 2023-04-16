@@ -409,8 +409,8 @@ int fl_make_list()
 
 
   getcwd(dirname, GBUFSIZ);
-  sprintf(tmpcmd, "cd %s;ls -aF > /usr/tmp/.svlffil%d", dirname, pid);
-  sprintf(tmpname, "/usr/tmp/.svlffil%d", pid);
+  sprintf(tmpcmd, "cd %s;ls -aF > /tmp/.svlffil%d", dirname, pid);
+  sprintf(tmpname, "/tmp/.svlffil%d", pid);
   system(tmpcmd);
   dirp = fopen(tmpname, "r");
   if (dirp == NULL)   /* just a check to make sure */

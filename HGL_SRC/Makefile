@@ -1,7 +1,7 @@
 
 CC = cc
 FLAGS = -m32
-OPENWINHOME = ../usr
+OPENWINHOME = /usr
 MFILE = 
 INCDIR = -I/usr/include
 LIBDIR = -L/usr/lib32
