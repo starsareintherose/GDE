@@ -3,9 +3,9 @@ CC = cc
 FLAGS = -m32
 OPENWINHOME = ../usr
 MFILE = 
-INCDIR = -I/usr/include/xview
+INCDIR = -I/usr/include
 LIBDIR = -L/usr/lib32
-LIBS = -lxview -lolgx -lX11 
+LIBS = -lxview -lolgx -lX11 -ltirpc 
 
 libs.o = Alloc.o HGLfuncs.o
 

@@ -744,21 +744,3 @@ informat:genbank
 inmask:
 insave:
 
-
-#Online menu  
-menu:On-Line Res.
-
-item:GDE for Linux resources at Bioafrica.net
-itemmethod:netscape http://www.bioafrica.net &
-
-item:-------------------------
-item:add a new website
-itemmethod:xterm -e /usr/local/bio/GDE/newURL.pl $name $url
-
-arg:name
-argtype:text
-arglabel:Enter the site name
-
-arg:url
-argtype:text
-arglabel:Enter the URL (including http://)

@@ -5,8 +5,8 @@ SRCS= ParseMenu.c main.c BasicDisplay.c EventHandler.c FileIO.c \
 DrawNA.c Free.c BuiltIn.c Edit.c Genbank.c Scroll.c ChooseFile.c \
 CutCopyPaste.c HGLfile.c
 
-LIBS= -lm -lxview -lolgx -lX11
-CFLAGS= -g -m32 -L/usr/lib32 -I/usr/include/xview
+LIBS= -lm -lxview -lolgx -lX11 -ltirpc
+CFLAGS= -g -m32 -L/usr/lib32 -I/usr/include
 CC = cc
 #	Possible defines, SUN4 SGI DEC HGL
 DEFINES =  -DLINUX
